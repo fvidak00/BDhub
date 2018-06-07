@@ -1,8 +1,6 @@
-﻿
-.upload_container {
+﻿.upload_container {
     padding: 16px;
     width: 50%;
-   
     top: 50%;
     margin-left: 25%;
     /*margin-right: -50%;
@@ -10,12 +8,8 @@
 }
 
 
-
-
-
 h2 {
     text-align: center;
-    
 }
 
 

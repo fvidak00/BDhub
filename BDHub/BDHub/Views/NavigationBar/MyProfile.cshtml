@@ -1,4 +1,4 @@
-﻿@model Bdots1.CertUser
+﻿@model BDHub.Models.CertUser
 
 @{
     ViewBag.Title = "My Profile";
@@ -49,7 +49,7 @@
             @Html.LabelFor(model => model.balance, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-13">
                 @Html.DisplayFor(model => model.balance)
-                @Html.Label("BDoken")
+                @Html.Label("BD")
                 @Html.ValidationMessageFor(model => model.balance, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -73,6 +73,3 @@
         </div>
     </div>
 }
-
-
-@*<p>Use this area to provide additional information.</p>*@

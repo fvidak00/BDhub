@@ -45,7 +45,7 @@ namespace BDHub.Controllers
                 BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
                 //napravit unos passworda za BDoken
-                if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "password", BDWei) && result.userID != sid))
+                if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "password", BDWei)) && result.userID != sid)
                 {
                     return RedirectToAction("Index", new { insufficientFunds = 1 });
                 }
@@ -159,13 +159,14 @@ namespace BDHub.Controllers
                 ViewBag.Message = "Transactions";
                 int sid = (int)Session["userID"];
 
-                string actor = (from a in db.CertUsers
+                var actor = (from a in db.CertUsers
                                where a.certUserID == sid
-                               select a.username).ToString();
+                               select a).SingleOrDefault();
 
                 var transactions = from t in db.Payments
-                                   where (t.payerUsername.Equals(actor) || t.receiverUsername.Equals(actor))
+                                   where (t.payerUsername.Equals(actor.username) || t.receiverUsername.Equals(actor.username))
                                    select t;
+
                 return View(transactions);
             }
             else

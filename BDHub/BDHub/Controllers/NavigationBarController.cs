@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
-using Bdots1;
+using BDHub.Models;
 
-namespace Bdots1.Controllers
+namespace BDHub.Controllers
 {
     public class NavigationBarController : Controller
     {
@@ -23,8 +21,6 @@ namespace Bdots1.Controllers
                 ViewBag.Message = "Not enough gold, milord.";
             var videos = from v in db.Videos
                          select v;
-
-
             return View(videos);
         }
 
@@ -45,10 +41,11 @@ namespace Bdots1.Controllers
                 var receiver = (from r in db.CertUsers
                                 where r.certUserID == result.userID
                                 select r).SingleOrDefault();
-                BigInteger bal = await BDC.CheckBalance("0xbb79cc5e10fadfa398b7be548c331e2181499ce3", "password");
-                BigInteger bal1 = await BDC.CheckBalance("0x2119ad81730f7da63b56d5d4eecc82d26c226db7", "password");
 
-                if (payer.balance < result.price && result.userID != sid)
+                BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
+
+                //napravit unos passworda za BDoken
+                if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "password", BDWei)) && result.userID != sid)
                 {
                     return RedirectToAction("Index", new { insufficientFunds = 1 });
                 }
@@ -57,22 +54,16 @@ namespace Bdots1.Controllers
                     result.viewsCount++;
                     if (result.userID != sid)
                     {
+                        await BDC.Transfer(payer.beternumAddress, "password", receiver.beternumAddress, BDWei);
                         Payment payment = new Payment
                         {
-                            videoID = result.videoID,
-                            payer = payer.certUserID,
-                            receiver = receiver.certUserID,
+                            videoTitle = result.title,
+                            payerUsername = payer.username,
+                            receiverUsername = receiver.username,
                             paymentSum = result.price,
                             paymentDatetime = DateTime.Now
                         };
-
                         db.Payments.Add(payment);
-                        db.SaveChanges();
-
-                        receiver.balance += result.price;
-                        payer.balance -= result.price;
-
-                        await BDC.Transfer("0xbb79cc5e10fadfa398b7be548c331e2181499ce3", "password", "0x2119ad81730f7da63b56d5d4eecc82d26c226db7", 5);
                     }
                     db.SaveChanges();
 
@@ -100,11 +91,12 @@ namespace Bdots1.Controllers
 
         }
 
-        public ActionResult MyProfile(int profileUpdated = 0)
+        public async Task<ActionResult> MyProfile(int profileUpdated = 0)
         {
             try
             {
                 int id = (int)Session["userID"];
+
                 switch (profileUpdated)
                 {
                     case 1:
@@ -122,6 +114,11 @@ namespace Bdots1.Controllers
                 var result = (from c in db.CertUsers
                               where c.certUserID == id
                               select c).SingleOrDefault();
+
+                //Add password input
+                BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
+                result.balance = (decimal)userBalance / 1000000000000000000;
+
                 return View(result);
             }
             catch
@@ -161,9 +158,15 @@ namespace Bdots1.Controllers
             {
                 ViewBag.Message = "Transactions";
                 int sid = (int)Session["userID"];
+
+                var actor = (from a in db.CertUsers
+                               where a.certUserID == sid
+                               select a).SingleOrDefault();
+
                 var transactions = from t in db.Payments
-                                   where (t.Payers.certUserID == sid || t.Receivers.certUserID == sid)
+                                   where (t.payerUsername.Equals(actor.username) || t.receiverUsername.Equals(actor.username))
                                    select t;
+
                 return View(transactions);
             }
             else
@@ -195,14 +198,14 @@ namespace Bdots1.Controllers
                 {
                     if (TryUpdateModel(result))
                     {
-                        if(result.firstName != null && 
+                        if (result.firstName != null &&
                            result.lastName != null &&
                            result.email != null)
                         {
                             db.SaveChanges();
                             return RedirectToAction("MyProfile", new { profileUpdated = 1 });
                         }
-                        
+
                     }
                     return RedirectToAction("MyProfile", new { profileUpdated = 2 });
                 }
@@ -249,6 +252,7 @@ namespace Bdots1.Controllers
             }
 
         }
+
         public ActionResult DeleteVideo(int? id)
         {
             var dVideo = (from v in db.Videos
@@ -296,34 +300,17 @@ namespace Bdots1.Controllers
 
                 try
                 {
-
-                    //string[] passwordi = collection[2].Split(',');
-
                     string oldPass = collection[2];
                     string newPass = collection[3];
 
                     if (result.password == oldPass)
                     {
-
                         result.password = newPass;
-
                         db.SaveChanges();
-
-                        //if (TryUpdateModel(result))
-                        //{
-                        //    db.SaveChanges();
-                        //    return RedirectToAction("ChangePassword", new { profileUpdated = 1 });
-                        //}
-                        //return RedirectToAction("ChangePassword", new { profileUpdated = 2 });
-
-
-
                         return RedirectToAction("ChangePassword", new { nesto = 1 });
-
                     }
                     else
                     {
-
                         return RedirectToAction("ChangePassword", new { nesto = 3 });
                     }
                 }
@@ -351,6 +338,8 @@ namespace Bdots1.Controllers
             {
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.To.Add(userModel.email);
+
+                //Triba mail prominit, al radi ovako
                 mailMessage.From = new MailAddress("bdots1@outlook.com");
 
                 mailMessage.Subject = "Do not forget your password this time!";
@@ -363,9 +352,8 @@ namespace Bdots1.Controllers
                     Credentials = new System.Net.NetworkCredential("bdots1@outlook.com", "Grf55psf")
                 };
                 smtpClient.Send(mailMessage);
-                
+
                 return RedirectToAction("../Login/Index", new { flag = 1 });
-                //Response.Write("E-mail sent!");
             }
             else
             {

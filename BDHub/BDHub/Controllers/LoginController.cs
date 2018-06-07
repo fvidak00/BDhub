@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-namespace Bdots1.Controllers
+using BDHub.Models;
+
+
+namespace BDHub.Controllers
 {
     public class LoginController : Controller
     {

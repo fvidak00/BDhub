@@ -1,21 +1,18 @@
-﻿
-.container {
+﻿.container {
     padding: 16px;
     width: 50%;
     border: solid;
     top: 50%;
     margin-left: 25%;
-    
 }
 
 .upload-container {
-    
     margin-left: 25%;
 }
 
 
 h2 {
-    text-align:center;
+    text-align: center;
 }
 
 
@@ -50,7 +47,3 @@ input[type=text], input[type=email] {
     .registerbtn:hover {
         opacity: 1;
     }
-
-
-
-

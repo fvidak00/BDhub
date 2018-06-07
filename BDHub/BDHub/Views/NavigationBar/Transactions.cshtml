@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Bdots1.Payment>
+﻿@model IEnumerable<BDHub.Models.Payment>
 @{
     ViewBag.Title = "Transactions";
 }
@@ -31,15 +31,15 @@
        </div>
 
         <div class="col-md-3">
-            @item.Payers.username
+            @item.payerUsername
         </div>
 
         <div class="col-md-3">
-            @item.Receivers.username
+            @item.receiverUsername
         </div>
 
         <div class="col-md-3">
-            @item.paymentSum <b>BDoken</b>
+            @item.paymentSum <b>BD</b>
         </div>
     </div>
 }

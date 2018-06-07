@@ -5,8 +5,9 @@ using System.Numerics;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Contracts;
 using BDHub.Models;
+using System.Linq;
 
-namespace Bdots1
+namespace BDHub
 {
     public class BDokenControl
     {
@@ -18,21 +19,17 @@ namespace Bdots1
         
         //Create new account, returns account address
         //Triba se riješit plaintexta
-        public async Task CreateNew(int userID, string password)
+        public async Task<string> CreateNew(string password)
         {
             var web3 = new Web3Geth();
-            await web3.Personal.NewAccount.SendRequestAsync(password);
-            
-            //save account and password on new database
+            string newAddress = await web3.Personal.NewAccount.SendRequestAsync(password);
+
+            string head = (from h in db.CertUsers
+                       where h.certUserID == 1
+                       select h.beternumAddress).ToString();
+            await MintToken(head, "password", newAddress, 10000000000000000000);
+            return newAddress;
         }
-
-
-
-        //Ovo leti ća
-        //readonly string senderAddress = "0xbb79cc5e10fadfa398b7be548c331e2181499ce3";
-        //readonly string receiverAddress = "0x2119ad81730f7da63b56d5d4eecc82d26c226db7";
-        //readonly string password = "password";
-
         //ContractToNethereum function parser
         public Function GetFunction(string senderAddress, string password, string contractFunction)
         {

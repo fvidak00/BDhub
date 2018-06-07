@@ -1,8 +1,7 @@
 ﻿@{
     ViewBag.Title = "Upload";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    }
+}
 
 <h2>Upload</h2>
 <br />
@@ -20,7 +19,7 @@
         </p>
        
       
-        Click to check youtubeurl<input type="checkbox" ng-disabled="!(video.filepath)" ng-model="myVar" value="Check" name="btnCheck" ng-click="check(video.filepath)" />
+        Click to check YouTube URL<input type="checkbox" ng-disabled="!(video.filepath)" ng-model="myVar" value="Check" name="btnCheck" ng-click="check(video.filepath)" />
         <div ng-show="myVar">
             <div id="player"></div>
         </div>
@@ -29,7 +28,7 @@
 
         </p>
 
-        <input type="text" name="video.price" placeholder="Video price " data-ng-model="video.price" /><br />
+        <input type="text" name="video.price" placeholder="Video price " data-ng-model="video.price" /> BD<br />
         <br />
 
 

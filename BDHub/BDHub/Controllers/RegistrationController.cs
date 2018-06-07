@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Net.Security;
-using System.Web.Security;
 using System.Net.Mail;
+using BDHub.Models;
+using System.Threading.Tasks;
 
-namespace Bdots1.Controllers
+namespace BDHub.Controllers
 {
 
 
@@ -21,12 +20,13 @@ namespace Bdots1.Controllers
 
         [HttpPost]
 
-        public JsonResult SaveUser(CertUser newCertUser)
+        public async Task<JsonResult> SaveUser(CertUser newCertUser)
         {
             int state;
 
 
             BDEntities connection = new BDEntities();
+            BDokenControl BDC = new BDokenControl();
             //string poruka = "amen chao";
             List<CertUser> ListOfUsers = connection.CertUsers.ToList();
 
@@ -47,11 +47,14 @@ namespace Bdots1.Controllers
 
             //String password = Membership.GeneratePassword(8, 0);
             String password = Guid.NewGuid().ToString().Substring(0, 8);
-            state = MessageSend(newCertUser.email, password,newCertUser.username);
+            state = MessageSend(newCertUser.email, password, newCertUser.username);
             if (state == 0)
             {
                 newCertUser.password = password;
-                newCertUser.balance = 0;
+                //Need 2nd passwords
+                //New unchangeable just for BDoken
+                newCertUser.beternumAddress = await BDC.CreateNew("password");
+
                 connection.CertUsers.Add(newCertUser);
                 connection.SaveChanges();
             }

@@ -12,6 +12,7 @@ namespace BDHub.Models
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
+    using System.Numerics;
 
     public partial class CertUser
     {
@@ -36,13 +37,16 @@ namespace BDHub.Models
         [Required(ErrorMessage = "This field is required")]
         public string password { get; set; }
 
-        [DisplayName("First name")]
+        [DisplayName("E-mail")]
         public string email { get; set; }
 
         [DisplayName("Bethernum Account Address")]
         public string beternumAddress { get; set; }
 
         public string LoginErrorMessage { get; set; }
+
+        [DisplayName("BD Balance")]
+        public decimal balance { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

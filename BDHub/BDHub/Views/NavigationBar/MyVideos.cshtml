@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Bdots1.Video>
+
+@{
+    ViewBag.Title = "Bdots Home";
+}
+
+<style>
+    col-md-2 {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-3">
+        <b>VIDEO TITLE</b>
+    </div>
+
+    <div class="col-md-3">
+
+        <b>DESCRIPTION</b>
+    </div>
+
+    <div class="col-md-3">
+
+        <p><b>VIEWS</b></p>
+    </div>
+    <div class="col-md-3">
+        <p><b>PRICE</b></p>
+    </div>
+</div>
+
+@foreach (var item in Model)
+{
+
+<div class="row">
+    <div class="col-md-3">
+        <h2>
+            @Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID })
+        </h2>
+
+        <p>@Html.ActionLink("Edit video", "EditVideo", new { id = item.videoID })</p>
+        <p>@Html.ActionLink("Delete video", "DeleteVideo", new { id = item.videoID }, new { onclick = "return confirm('Are you sure you want to delete this video?');" })</p>
+
+    </div>
+
+    <div class="col-md-3">
+        <p background-color="gray">@item.about</p>
+    </div>
+
+    <div class="col-md-3">
+        <p>@item.viewsCount </p>
+    </div>
+    <div class="col-md-3">
+        <p>@item.price <b>BDoken</b></p>
+    </div>
+        
+
+</div>
+}

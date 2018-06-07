@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Bdots1.Video>
+
+@{
+    ViewBag.Title = "Bdots Home";
+}
+
+<script type="text/javascript">
+    var notEnoughGoldMessage = "@ViewBag.Message";
+    if (!(notEnoughGoldMessage===""))
+        alert(notEnoughGoldMessage);
+    
+
+    
+</script>
+
+
+@foreach (var item in Model)
+{
+
+    <div class="row">
+        <div class="col-md-treciStupac">
+            <h2>
+
+                @*@Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID })*@
+       
+                @Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID },
+               new { onclick = "return confirm('Are you sure you want to watch following video: \\n " +
+               "\\n Video title: " + @item.title +
+               "\\n Price: " + @item.price + " BDoken" +
+               "\\n Uploaded by: " + @item.CertUser.username + "')"})
+                
+
+            </h2>
+        </div>
+
+
+
+
+        <div class="col-md-4">
+            <p background-color="gray">@item.about</p>
+        </div>
+
+
+
+
+
+        <div class="col-md-treciStupac">
+
+            <p>Owner > @item.CertUser.username </p>
+            <p>Views > @item.viewsCount </p>
+            <p>Price > @item.price BDoken</p>
+
+        </div>
+    </div>
+}

@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'BDBase.dbo.BDokenDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="BDokenDetails">
+          <Key>
+            <PropertyRef Name="BDID" />
+            <PropertyRef Name="BDname" />
+            <PropertyRef Name="BDsymbol" />
+            <PropertyRef Name="BDdecimals" />
+          </Key>
+          <Property Name="BDID" Type="char" MaxLength="42" Nullable="false" />
+          <Property Name="BDname" Type="char" MaxLength="6" Nullable="false" />
+          <Property Name="BDsymbol" Type="char" MaxLength="2" Nullable="false" />
+          <Property Name="BDdecimals" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CertUser">
+          <Key>
+            <PropertyRef Name="certUserID" />
+          </Key>
+          <Property Name="certUserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="firstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="lastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="password" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="320" Nullable="false" />
+          <Property Name="beternumAddress" Type="varchar" MaxLength="42" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="paymentID" />
+          </Key>
+          <Property Name="paymentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="paymentDatetime" Type="datetime" />
+          <Property Name="paymentSum" Type="decimal" Precision="36" Scale="18" Nullable="false" />
+          <Property Name="videoTitle" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="payerUsername" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="receiverUsername" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="videoID" />
+          </Key>
+          <Property Name="videoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="36" Scale="18" Nullable="false" />
+          <Property Name="viewsCount" Type="int" />
+          <Property Name="filepath" Type="varchar(max)" Nullable="false" />
+          <Property Name="about" Type="nvarchar(max)" />
+          <Property Name="userID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Video__userID__2A4B4B5E">
+          <End Role="CertUser" Type="Self.CertUser" Multiplicity="1" />
+          <End Role="Video" Type="Self.Video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CertUser">
+              <PropertyRef Name="certUserID" />
+            </Principal>
+            <Dependent Role="Video">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BDModelStoreContainer">
+          <EntitySet Name="CertUser" EntityType="Self.CertUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payment" EntityType="Self.Payment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Video" EntityType="Self.Video" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BDokenDetails" EntityType="Self.BDokenDetails" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BDokenDetails].[BDID] AS [BDID], 
+    [BDokenDetails].[BDname] AS [BDname], 
+    [BDokenDetails].[BDsymbol] AS [BDsymbol], 
+    [BDokenDetails].[BDdecimals] AS [BDdecimals]
+    FROM [dbo].[BDokenDetails] AS [BDokenDetails]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__Video__userID__2A4B4B5E" Association="Self.FK__Video__userID__2A4B4B5E">
+            <End Role="CertUser" EntitySet="CertUser" />
+            <End Role="Video" EntitySet="Video" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BDModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CertUser">
+          <Key>
+            <PropertyRef Name="certUserID" />
+          </Key>
+          <Property Name="certUserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="320" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="beternumAddress" Type="String" MaxLength="42" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Videos" Relationship="Self.FK__Video__userID__2A4B4B5E" FromRole="CertUser" ToRole="Video" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="paymentID" />
+          </Key>
+          <Property Name="paymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="paymentDatetime" Type="DateTime" Precision="3" />
+          <Property Name="paymentSum" Type="Decimal" Precision="36" Scale="18" Nullable="false" />
+          <Property Name="videoTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="payerUsername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="receiverUsername" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Video">
+          <Key>
+            <PropertyRef Name="videoID" />
+          </Key>
+          <Property Name="videoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="36" Scale="18" Nullable="false" />
+          <Property Name="viewsCount" Type="Int32" />
+          <Property Name="filepath" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="about" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="userID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CertUser" Relationship="Self.FK__Video__userID__2A4B4B5E" FromRole="Video" ToRole="CertUser" />
+        </EntityType>
+        <EntityType Name="BDokenDetail">
+          <Key>
+            <PropertyRef Name="BDID" />
+            <PropertyRef Name="BDname" />
+            <PropertyRef Name="BDsymbol" />
+            <PropertyRef Name="BDdecimals" />
+          </Key>
+          <Property Name="BDID" Type="String" MaxLength="42" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="BDname" Type="String" MaxLength="6" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="BDsymbol" Type="String" MaxLength="2" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="BDdecimals" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Video__userID__2A4B4B5E">
+          <End Role="CertUser" Type="Self.CertUser" Multiplicity="1" />
+          <End Role="Video" Type="Self.Video" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CertUser">
+              <PropertyRef Name="certUserID" />
+            </Principal>
+            <Dependent Role="Video">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BDEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CertUsers" EntityType="Self.CertUser" />
+          <EntitySet Name="Payments" EntityType="Self.Payment" />
+          <EntitySet Name="Videos" EntityType="Self.Video" />
+          <EntitySet Name="BDokenDetails" EntityType="Self.BDokenDetail" />
+          <AssociationSet Name="FK__Video__userID__2A4B4B5E" Association="Self.FK__Video__userID__2A4B4B5E">
+            <End Role="CertUser" EntitySet="CertUsers" />
+            <End Role="Video" EntitySet="Videos" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BDModelStoreContainer" CdmEntityContainer="BDEntities">
+          <EntitySetMapping Name="CertUsers">
+            <EntityTypeMapping TypeName="BDModel.CertUser">
+              <MappingFragment StoreEntitySet="CertUser">
+                <ScalarProperty Name="certUserID" ColumnName="certUserID" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="beternumAddress" ColumnName="beternumAddress" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="BDModel.Payment">
+              <MappingFragment StoreEntitySet="Payment">
+                <ScalarProperty Name="paymentID" ColumnName="paymentID" />
+                <ScalarProperty Name="paymentDatetime" ColumnName="paymentDatetime" />
+                <ScalarProperty Name="paymentSum" ColumnName="paymentSum" />
+                <ScalarProperty Name="videoTitle" ColumnName="videoTitle" />
+                <ScalarProperty Name="payerUsername" ColumnName="payerUsername" />
+                <ScalarProperty Name="receiverUsername" ColumnName="receiverUsername" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Videos">
+            <EntityTypeMapping TypeName="BDModel.Video">
+              <MappingFragment StoreEntitySet="Video">
+                <ScalarProperty Name="videoID" ColumnName="videoID" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="viewsCount" ColumnName="viewsCount" />
+                <ScalarProperty Name="filepath" ColumnName="filepath" />
+                <ScalarProperty Name="about" ColumnName="about" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BDokenDetails">
+            <EntityTypeMapping TypeName="BDModel.BDokenDetail">
+              <MappingFragment StoreEntitySet="BDokenDetails">
+                <ScalarProperty Name="BDID" ColumnName="BDID" />
+                <ScalarProperty Name="BDname" ColumnName="BDname" />
+                <ScalarProperty Name="BDsymbol" ColumnName="BDsymbol" />
+                <ScalarProperty Name="BDdecimals" ColumnName="BDdecimals" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

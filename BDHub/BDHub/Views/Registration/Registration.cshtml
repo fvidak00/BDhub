@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Registration";
+    Layout = null;
+}
+
+
+
+
+<body>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/RegistrationScript.js"></script>
+   
+    <link href="~/ContentCSS/Registration.css" rel="stylesheet" />
+    <div data-ng-app="myApp" data-ng-controller="registrationCtrl" @*ng-init="save=true"*@>
+        <div class="container">
+            <h2>Registration</h2>
+            <form name="Form">
+                First name:<input type="text" name="firstname" placeholder="Enter Firstname"data-ng-model="certuser.firstname" required />
+                <span ng-show="Form.firstname.$touched && Form.firstname.$invalid">The first name is required.</span>
+                <br />
+                <br />
+                Last name:<input type="text" name="certuser.lastname" placeholder="Enter Lastname"data-ng-model="certuser.lastname" /><br />
+                <br />
+                <br />
+                <p>
+                    Username:<input type="text" name="username" placeholder="Enter Username" data-ng-model="certuser.username" /><br />
+                    <span ng-show="Form.username.$touched && Form.username.$invalid">The username is required.</span>
+                </p>
+
+                <br />
+                Email:<input type="email" placeholder="Enter email" @*validate-email*@ name="email" data-ng-model="certuser.email" required />
+                      <span ng-show="Form.email.$invalid ">The email is required.</span>
+                <span ng-show="Form.email.$error.email">Invalid email address.</span>
+                <br />
+                <br />
+               
+            </form>
+
+            <input type="button" class="registerbtn" value="Save" name="btnSave" ng-click="savedata(certuser)" @*ng-disabled="save"*@ />
+        </div>
+
+    </div>
+</body>

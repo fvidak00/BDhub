@@ -1,0 +1,78 @@
+﻿@model Bdots1.CertUser
+
+@{
+    ViewBag.Title = "My Profile";
+}
+
+<script type="text/javascript">
+    var profileUpdated = "@ViewBag.Message";
+    if (!(profileUpdated===""))
+        alert(profileUpdated);
+</script>
+
+<h2>My Profile</h2>
+
+@using (Html.BeginForm("Edit", "NavigationBar", FormMethod.Post, new { id = Model.certUserID }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Details</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.certUserID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.username, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-13">
+                @Html.DisplayFor(model => model.username)
+                @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.firstName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.firstName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.firstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.lastName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.lastName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.lastName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.balance, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-13">
+                @Html.DisplayFor(model => model.balance)
+                @Html.Label("BDoken")
+                @Html.ValidationMessageFor(model => model.balance, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                
+                @Html.EditorFor(model => model.email,new {htmlAttributes = new { @class = "form-control text-box single-line" } })   
+                @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
+                
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+                <br /><br />
+                @Html.ActionLink("Change Password", "ChangePassword", "NavigationBar", new { @class = "btn btn-default" })
+            </div>
+        </div>
+    </div>
+}
+
+
+@*<p>Use this area to provide additional information.</p>*@

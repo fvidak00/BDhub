@@ -116,7 +116,8 @@ namespace BDHub.Controllers
                               select c).SingleOrDefault();
 
                 //Add password input
-                result.balance = await BDC.CheckBalance(result.beternumAddress, "password");
+                BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
+                result.balance = (decimal)userBalance / 1000000000000000000;
 
                 return View(result);
             }

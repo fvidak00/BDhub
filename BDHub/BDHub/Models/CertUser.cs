@@ -46,7 +46,7 @@ namespace BDHub.Models
         public string LoginErrorMessage { get; set; }
 
         [DisplayName("BD Balance")]
-        public BigInteger balance { get; set; }
+        public decimal balance { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

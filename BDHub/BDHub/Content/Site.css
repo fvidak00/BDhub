@@ -15,3 +15,41 @@ Set padding to keep content from hitting the edges
 .dl-horizontal dt {
     white-space: normal;
 }
+
+img {
+    width: 260px;
+}
+/* Set width on the form input elements since they're 100% wide by default */
+/*input,
+select,
+textarea {
+    max-width: 280px;
+}*/
+
+/*input[type=text], input[type=email] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: inline-block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+        input[type=text]:focus, input[type=email]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+
+
+
+.registerbtn {
+    background-color: grey;
+    color: white;
+    padding: 16px 20px;
+    margins: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}*/

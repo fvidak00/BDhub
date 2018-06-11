@@ -6,6 +6,8 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.Contracts;
 using BDHub.Models;
 using System.Linq;
+using Nethereum.KeyStore;
+using System.IO;
 
 namespace BDHub
 {
@@ -16,19 +18,31 @@ namespace BDHub
         readonly string testnetURL = "http://192.168.21.50:52353";
 
         private BDEntities db = new BDEntities();
-        
+
         //Create new account, returns account address
         //Triba se riješit plaintexta
         public async Task<string> CreateNew(string password)
         {
-            var web3 = new Web3Geth();
-            string newAddress = await web3.Personal.NewAccount.SendRequestAsync(password);
+            //var web3 = new Web3Geth(testnetURL);
+            ////string newAddress = await web3.Personal.NewAccount.SendRequestAsync(password);
 
-            string head = (from h in db.CertUsers
-                       where h.certUserID == 1
-                       select h.beternumAddress).ToString();
-            await MintToken(head, "password", newAddress, 10000000000000000000);
-            return newAddress;
+            ////tempUser.beternumAddress = await web3.Personal.NewAccount.SendRequestAsync(password); ;
+            ////db.SaveChanges();
+
+            ////var head = (from h in db.CertUsers
+            ////               where h.certUserID == 1
+            ////               select h).SingleOrDefault();
+            ////await MintToken(head.beternumAddress, "password", newAddress, 10000000000000000000);
+            ////return newAddress;
+            //return await web3.Personal.NewAccount.SendRequestAsync(password);
+
+            var ecKey = Nethereum.Signer.EthECKey.GenerateKey();
+            var address = ecKey.GetPublicAddress();
+            var service = new KeyStoreService();
+            var encryptedKey = service.EncryptAndGenerateDefaultKeyStoreAsJson(password, ecKey.GetPrivateKeyAsBytes(), address);
+            var filename = service.GenerateUTCFileName(address);
+
+            //Triba path
         }
         //ContractToNethereum function parser
         public Function GetFunction(string senderAddress, string password, string contractFunction)
@@ -87,6 +101,7 @@ namespace BDHub
             await CallFunction(senderAddress, receiverAddress, value, transfer);
         }
 
+        //wtf
         public async Task MintToken(string senderAddress, string password, string receiverAddress, BigInteger value)
         {
             Function mintToken = GetFunction(senderAddress, password, "MintToken");

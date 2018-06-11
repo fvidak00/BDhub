@@ -16,11 +16,11 @@
         <div class="container">
             <h2>Registration</h2>
             <form name="Form">
-                First name:<input type="text" name="firstname" placeholder="Enter Firstname"data-ng-model="certuser.firstname" required />
+                First name:<input type="text" name="firstname" placeholder="Enter Firstname" data-ng-model="certuser.firstname" required />
                 @*<span ng-show="Form.firstname.$touched && Form.firstname.$invalid">The first name is required.</span>*@
                 <br />
                 <br />
-                Last name:<input type="text" name="certuser.lastname" placeholder="Enter Lastname"data-ng-model="certuser.lastname" /><br />
+                Last name:<input type="text" name="certuser.lastname" placeholder="Enter Lastname" data-ng-model="certuser.lastname" /><br />
                 <br />
                 <br />
                 <p>
@@ -30,11 +30,16 @@
 
                 <br />
                 Email:<input type="email" placeholder="Enter email" @*validate-email*@ name="email" data-ng-model="certuser.email" required />
-                      <span ng-show="Form.email.$invalid ">The email is required.</span>
+                <span ng-show="Form.email.$invalid ">The email is required.</span>
                 <span ng-show="Form.email.$error.email">Invalid email address.</span>
                 <br />
+
                 <br />
-               
+                <p>
+                   Password for BDoken Account<input type="password" name="bdokenPass" placeholder="Enter Password for BDoken account" data-ng-model="certuser.bdokenPass" /><br />
+                    <span ng-show="Form.bdokenPass.$touched && Form.bdokenPass.$invalid">The password for BDoken is required and unchangable.</span>
+                </p>
+
             </form>
 
             <input type="button" class="registerbtn" value="Save" name="btnSave" ng-click="savedata(certuser)" @*ng-disabled="save"*@ />

@@ -12,6 +12,8 @@ namespace BDHub.Controllers
     {
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
+        public CertUser tempUser;
+        public string tempAddr = "";
 
         public ActionResult Index(int insufficientFunds = 0)
         {
@@ -116,8 +118,15 @@ namespace BDHub.Controllers
                               select c).SingleOrDefault();
 
                 //Add password input
-                BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
-                result.balance = (decimal)userBalance / 1000000000000000000;
+                try
+                {
+                    BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
+                    result.balance = (decimal)userBalance / 1000000000000000000;
+                }
+                catch
+                {
+                    result.balance = 0;
+                }
 
                 return View(result);
             }
@@ -127,6 +136,22 @@ namespace BDHub.Controllers
             }
 
         }
+
+        public ActionResult CreateNewBDokenAccount(int? id)
+        {
+            tempUser = (from n in db.CertUsers
+                           where n.certUserID == id
+                           select n).SingleOrDefault();
+
+            tempAddr = await BDC.CreateNew("password");
+
+            tempUser.beternumAddress = tempAddr;
+            db.SaveChanges();
+
+            return View();
+        }
+
+        
 
         public ActionResult MyVideos()
         {
@@ -288,6 +313,7 @@ namespace BDHub.Controllers
 
             return View();
         }
+
         [HttpPost]
         public ActionResult ChangePassword(FormCollection collection, int nesto = 0)
         {

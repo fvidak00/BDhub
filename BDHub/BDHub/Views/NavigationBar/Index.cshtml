@@ -12,7 +12,8 @@
 
     
 </script>
-
+<script src="~/Scripts/RegistrationScript.js"></script>
+<script src="~/Scripts/angular.min.js"></script>
 @{ string getYouTubeThumbnail(string YoutubeUrl)
     {
         string youTubeThumb = string.Empty;
@@ -41,15 +42,47 @@
         return "http://img.youtube.com/vi/" + youTubeThumb + "/mqdefault.jpg";
     } }
 
+@*<tr>
+    <th>
+        @Html.ActionLink("title", "Index", new { sortOrder = ViewBag.NameSortParm })
+    </th>
+    <th>
+        About
+    </th>
+    <th>
+        @Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.DateSortParm })
+    </th>
+    <th></th>
+</tr>*@
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
+    </div>
+
+   
+
+    <div class="col-md-3">
+
+        <b>@Html.ActionLink("Views", "Index", new { sortOrder = ViewBag.ViewsSortParm })</b>
+    </div>
+    <div class="col-md-3">
+        <p><b>@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm })</b></p>
+    </div>
+</div>
+
 @foreach (var item in Model)
 {
 
 <div class="row">
   <script>
       function clickImage() {
+            
                             return ('Are you sure you want to watch following video: \n\n Video title:  @item.title  \n\n Price:   @item.price  BDoken \n\n Uploaded by:  @item.CertUser.username');
                         }
   </script>
+  
+
     <div class="col-md-3">
         <h2>
 
@@ -94,6 +127,8 @@
         })*@
 
     <div class="col-md-3">
+        <p><b>@item.title </b></p>
+        <br />
         <p background-color="gray">@item.about</p>
     </div>
 
@@ -107,8 +142,12 @@
 
         <p>Owner > @item.CertUser.username </p>
         <p>Views > @item.viewsCount </p>
-        <p>Price > @item.price BDoken</p>
+        
 
+    </div>
+    <div class="col-md-3">
+
+        <p>Price > @item.price BDoken</p>
     </div>
 </div>
 }

@@ -46,6 +46,7 @@ namespace BDHub.Models
         public string LoginErrorMessage { get; set; }
 
         [DisplayName("BD Balance")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0,00}")]
         public decimal balance { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

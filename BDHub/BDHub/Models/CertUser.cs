@@ -24,7 +24,7 @@ namespace BDHub.Models
     
         public int certUserID { get; set; }
 
-        [DisplayName("User name")]
+        [DisplayName("Username")]
         [Required(ErrorMessage = "This field is required")]
         public string username { get; set; }
 
@@ -46,7 +46,7 @@ namespace BDHub.Models
         public string LoginErrorMessage { get; set; }
 
         [DisplayName("BD Balance")]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0,00}")]
+        [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal balance { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

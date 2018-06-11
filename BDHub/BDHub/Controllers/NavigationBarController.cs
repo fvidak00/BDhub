@@ -70,8 +70,10 @@ namespace BDHub.Controllers
                     return RedirectToAction("VideoPlayer", new { id });
                 }
             }
-            catch
+            catch(Exception e)
             {
+                if(e.Message == "gas required exceeds allowance or always failing transaction")
+                    return RedirectToAction("Index", new { insufficientFunds = 1 });
                 return Redirect("~/Login/Index");
             }
 

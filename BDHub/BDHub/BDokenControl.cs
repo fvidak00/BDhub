@@ -17,25 +17,12 @@ namespace BDHub
         readonly string abi = @"[{""constant"":true,""inputs"":[],""name"":""name"",""outputs"":[{""name"":"""",""type"":""string""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""totalSupply"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""decimals"",""outputs"":[{""name"":"""",""type"":""uint8""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""_to"",""type"":""address""},{""name"":""_value"",""type"":""uint256""}],""name"":""PayUp"",""outputs"":[{""name"":""success"",""type"":""bool""}],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""newSellPrice"",""type"":""uint256""},{""name"":""newBuyPrice"",""type"":""uint256""}],""name"":""SetPrices"",""outputs"":[],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""CheckBalance"",""outputs"":[{""name"":""balance"",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""sellPrice"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""amount"",""type"":""uint256""}],""name"":""Sell"",""outputs"":[{""name"":""revenue"",""type"":""uint256""}],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""address""}],""name"":""balanceOf"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""buyPrice"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""owner"",""outputs"":[{""name"":"""",""type"":""address""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[],""name"":""BloodForTheBloodGod"",""outputs"":[{""name"":""success"",""type"":""bool""}],""payable"":true,""stateMutability"":""payable"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""symbol"",""outputs"":[{""name"":"""",""type"":""string""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[],""name"":""Buy"",""outputs"":[{""name"":""amount"",""type"":""uint256""}],""payable"":true,""stateMutability"":""payable"",""type"":""function""},{""constant"":true,""inputs"":[{""name"":""_value"",""type"":""uint256""}],""name"":""CheckRequiredFunds"",""outputs"":[{""name"":""enough"",""type"":""bool""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""newOwner"",""type"":""address""}],""name"":""TransferOwnership"",""outputs"":[],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""target"",""type"":""address""},{""name"":""mintedAmount"",""type"":""uint256""}],""name"":""MintToken"",""outputs"":[],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""inputs"":[{""name"":""initialSupply"",""type"":""uint256""},{""name"":""tokenName"",""type"":""string""},{""name"":""tokenSymbol"",""type"":""string""},{""name"":""centralMinter"",""type"":""address""},{""name"":""sellPr"",""type"":""uint256""},{""name"":""buyPr"",""type"":""uint256""}],""payable"":false,""stateMutability"":""nonpayable"",""type"":""constructor""},{""anonymous"":false,""inputs"":[{""indexed"":true,""name"":""from"",""type"":""address""},{""indexed"":true,""name"":""to"",""type"":""address""},{""indexed"":false,""name"":""value"",""type"":""uint256""}],""name"":""TransferEvent"",""type"":""event""}]";
         readonly string testnetURL = "http://192.168.21.50:52353";
 
-        private BDEntities db = new BDEntities();
+        //private BDEntities db = new BDEntities();
 
         //Create new account, returns account address
         //Triba se riješit plaintexta
         public string CreateNew(string password)
         {
-            //var web3 = new Web3Geth(testnetURL);
-            ////string newAddress = await web3.Personal.NewAccount.SendRequestAsync(password);
-
-            ////tempUser.beternumAddress = await web3.Personal.NewAccount.SendRequestAsync(password); ;
-            ////db.SaveChanges();
-
-            ////var head = (from h in db.CertUsers
-            ////               where h.certUserID == 1
-            ////               select h).SingleOrDefault();
-            ////await MintToken(head.beternumAddress, "password", newAddress, 10000000000000000000);
-            ////return newAddress;
-            //return await web3.Personal.NewAccount.SendRequestAsync(password);
-
             //Triba path
             string path = @"C:\Users\fvidak\AppData\Roaming\BDHub";
 
@@ -46,9 +33,6 @@ namespace BDHub
             string filename = service.GenerateUTCFileName(address);
 
             SaveToKeystore(path, filename, encryptedKey);
-
-            //string filename = @"UTC--2018-06-11T10-25-43.6778615Z--D98577992A276a9b96A1C74b04BB84FE8C4486db";
-            //string address = LoadFromKeystore(path, filename, password);
 
             return address;
         }
@@ -63,6 +47,7 @@ namespace BDHub
             }
         }
 
+        //Prototype
         public string LoadFromKeystore(string path, string filename, string password)
         {
             using (var oldFile = File.OpenText(Path.Combine(path, filename)))

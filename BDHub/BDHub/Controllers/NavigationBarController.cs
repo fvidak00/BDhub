@@ -12,8 +12,6 @@ namespace BDHub.Controllers
     {
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
-        public CertUser tempUser;
-        public string tempAddr = "";
 
         public ActionResult Index(int insufficientFunds = 0)
         {
@@ -137,21 +135,37 @@ namespace BDHub.Controllers
 
         }
 
-        public ActionResult CreateNewBDokenAccount(int? id)
+        public ActionResult CreateNewBDokenAccount()
         {
-            tempUser = (from n in db.CertUsers
+            int id = (int)Session["userID"];
+
+            CertUser addingNewAddress = (from n in db.CertUsers
                            where n.certUserID == id
                            select n).SingleOrDefault();
 
-            tempAddr = await BDC.CreateNew("password");
-
-            tempUser.beternumAddress = tempAddr;
+            addingNewAddress.beternumAddress = BDC.CreateNew("password");
             db.SaveChanges();
 
-            return View();
+            return RedirectToAction("MyProfile");
         }
 
-        
+        public ActionResult LoadBDokenAccount()
+        {
+            int id = (int)Session["userID"];
+
+            CertUser addingNewAddress = (from n in db.CertUsers
+                                         where n.certUserID == id
+                                         select n).SingleOrDefault();
+
+            //Need path and filename
+            string path = "";
+            string filename = "";
+
+            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(path, filename, "password");
+            db.SaveChanges();
+
+            return RedirectToAction("MyProfile");
+        }
 
         public ActionResult MyVideos()
         {
@@ -313,7 +327,6 @@ namespace BDHub.Controllers
 
             return View();
         }
-
         [HttpPost]
         public ActionResult ChangePassword(FormCollection collection, int nesto = 0)
         {

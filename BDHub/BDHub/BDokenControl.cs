@@ -21,7 +21,7 @@ namespace BDHub
 
         //Create new account, returns account address
         //Triba se riješit plaintexta
-        public async Task<string> CreateNew(string password)
+        public string CreateNew(string password)
         {
             //var web3 = new Web3Geth(testnetURL);
             ////string newAddress = await web3.Personal.NewAccount.SendRequestAsync(password);
@@ -36,14 +36,47 @@ namespace BDHub
             ////return newAddress;
             //return await web3.Personal.NewAccount.SendRequestAsync(password);
 
-            var ecKey = Nethereum.Signer.EthECKey.GenerateKey();
-            var address = ecKey.GetPublicAddress();
-            var service = new KeyStoreService();
-            var encryptedKey = service.EncryptAndGenerateDefaultKeyStoreAsJson(password, ecKey.GetPrivateKeyAsBytes(), address);
-            var filename = service.GenerateUTCFileName(address);
-
             //Triba path
+            string path = @"C:\Users\fvidak\AppData\Roaming\BDHub";
+
+            Nethereum.Signer.EthECKey ecKey = Nethereum.Signer.EthECKey.GenerateKey();
+            string address = ecKey.GetPublicAddress();
+            KeyStoreService service = new KeyStoreService();
+            string encryptedKey = service.EncryptAndGenerateDefaultKeyStoreAsJson(password, ecKey.GetPrivateKeyAsBytes(), address);
+            string filename = service.GenerateUTCFileName(address);
+
+            SaveToKeystore(path, filename, encryptedKey);
+
+            //string filename = @"UTC--2018-06-11T10-25-43.6778615Z--D98577992A276a9b96A1C74b04BB84FE8C4486db";
+            //string address = LoadFromKeystore(path, filename, password);
+
+            return address;
         }
+
+        //Prototype?
+        public void SaveToKeystore(string path, string filename, string encryptedKey)
+        {
+            using (var newFile = File.CreateText(Path.Combine(path, filename)))
+            {
+                newFile.Write(encryptedKey);
+                newFile.Flush();
+            }
+        }
+
+        public string LoadFromKeystore(string path, string filename, string password)
+        {
+            using (var oldFile = File.OpenText(Path.Combine(path, filename)))
+            {
+                string json = oldFile.ReadToEnd();
+                string addressStart = @"""address"":""";
+                string addressEnd = @""",""version""";
+                int indexOfStart = json.IndexOf(addressStart) + addressStart.Length;
+                int indexOfEnd = json.IndexOf(addressEnd);
+                return json.Substring(indexOfStart, indexOfEnd-indexOfStart);
+            }
+        }
+
+
         //ContractToNethereum function parser
         public Function GetFunction(string senderAddress, string password, string contractFunction)
         {

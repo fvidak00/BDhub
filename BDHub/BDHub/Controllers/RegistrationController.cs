@@ -90,8 +90,7 @@ namespace BDHub.Controllers
             }
             catch
             {
-                //Vratit na 1
-                return 0;
+                return 3;
             }
 
         }

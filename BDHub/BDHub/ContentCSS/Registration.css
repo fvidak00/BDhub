@@ -1,4 +1,5 @@
-﻿.container {
+﻿
+.container {
     padding: 16px;
     width: 50%;
     border: solid;
@@ -33,7 +34,22 @@ input[type=text], input[type=email], input[type=password] {
 
 
 
-.registerbtn {
+/*.registerbtn {
+    background-color: grey;
+    color: white;
+    padding: 16px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}*/
+
+.registerbtn:hover {
+    opacity: 1;
+}
+
+input.registerbtn {
     background-color: grey;
     color: white;
     padding: 16px 20px;
@@ -44,6 +60,13 @@ input[type=text], input[type=email], input[type=password] {
     opacity: 0.9;
 }
 
-    .registerbtn:hover {
-        opacity: 1;
+    input.registerbtn[disabled] {
+        background-color: whitesmoke;
+        color: black;
+        padding: 16px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: default;
+        width: 100%;
+        opacity: 0.9;
     }

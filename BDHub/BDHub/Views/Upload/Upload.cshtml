@@ -1,41 +1,47 @@
 ﻿@{
-    ViewBag.Title = "Upload";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+                /**/
+
+                ViewBag.Title = "Upload";
+                Layout = "~/Views/Shared/_Layout.cshtml";
+
 }
 
 <h2>Upload</h2>
 <br />
 <script src="~/Scripts/angular.min.js"></script>
-
 <script src="~/Scripts/RegistrationScript.js"></script>
 <link href="~/ContentCSS/Upload.css" rel="stylesheet" />
 
 <body>
 
     <div data-ng-app="myApp" data-ng-controller="uploadController" class="upload_container">
+        <form name="frm">
+            <p>
+                <input type="text" name="filepath" ng-pattern="regex" placeholder="Video Url" ng-model="video.filepath" required />
+                <span ng-show="frm.filepath.$touched && frm.filepath.$invalid ">Video URL is required</span>
+            </p>
 
-        <p>
-            <input type="text" name="video.filepath" placeholder="Video Url" ng-model="video.filepath" />
-        </p>
-       
-      
-        Click to check YouTube URL<input type="checkbox" ng-disabled="!(video.filepath)" ng-model="myVar" value="Check" name="btnCheck" ng-click="check(video.filepath)" />
-        <div ng-show="myVar">
-            <div id="player"></div>
-        </div>
-        <p>
-            <input type="text" name="video.title" placeholder="Video title " data-ng-model="video.title" />
+            <h4>Click to check youtubeurl  <input type="checkbox" ng-disabled="!(video.filepath)" ng-model="myVar" value="Check" name="btnCheck" ng-click="check(video.filepath)" /></h4>
+            <div ng-show="myVar">
+                <br />
+                <div id="player"></div>
+            </div>
+            <br />
+            <p>
+                <input type="text" name="title" placeholder="Video title " data-ng-model="video.title" required />
+                <span ng-show="frm.title.$touched && frm.title.$invalid ">Video title is required</span>
+            </p>
 
-        </p>
+            <input type="text" ng-pattern="priceRegEx" name="price" placeholder="Video price in BDoken" data-ng-model="video.price" required /><br />
+            <span ng-show="frm.price.$touched && frm.price.$invalid  ">Video price is required</span>
 
-        <input type="text" name="video.price" placeholder="Video price " data-ng-model="video.price" /> BD<br />
-        <br />
+            <br />
 
 
-        <textarea name="video.about" form="usrform" placeholder="About" data-ng-model="video.about"></textarea>
-        <br />
-        <input type="button" value="Save" class="registerbtn" name="btnSave" ng-click="savevideo(video)" />
-
+            <textarea name="video.about" form="usrform" placeholder="About" data-ng-model="video.about"></textarea>
+            <br />
+            <input type="button" value="Save" class="registerbtn" name="btnSave" ng-click="savevideo(video)" ng-disabled="frm.$invalid" />
+        </form>
     </div>
 </body>
 

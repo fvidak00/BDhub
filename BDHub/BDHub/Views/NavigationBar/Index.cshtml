@@ -1,55 +1,153 @@
 ﻿@model IEnumerable<BDHub.Models.Video>
 
 @{
-    ViewBag.Title = "BDHub Home";
+    ViewBag.Title = "Bdots Home";
 }
 
 <script type="text/javascript">
     var notEnoughGoldMessage = "@ViewBag.Message";
     if (!(notEnoughGoldMessage===""))
         alert(notEnoughGoldMessage);
-    
+
 
     
 </script>
+<script src="~/Scripts/RegistrationScript.js"></script>
+<script src="~/Scripts/angular.min.js"></script>
+@{ string getYouTubeThumbnail(string YoutubeUrl)
+    {
+        string youTubeThumb = string.Empty;
+        if (YoutubeUrl == "")
+            return "";
 
+        if (YoutubeUrl.IndexOf("=") > 0)
+        {
+            youTubeThumb = YoutubeUrl.Split('=')[1];
+        }
+        else if (YoutubeUrl.IndexOf("/v/") > 0)
+        {
+            string strVideoCode = YoutubeUrl.Substring(YoutubeUrl.IndexOf("/v/") + 3);
+            int ind = strVideoCode.IndexOf("?");
+            youTubeThumb = strVideoCode.Substring(0, ind == -1 ? strVideoCode.Length : ind);
+        }
+        else if (YoutubeUrl.IndexOf('/') < 6)
+        {
+            youTubeThumb = YoutubeUrl.Split('/')[3];
+        }
+        else if (YoutubeUrl.IndexOf('/') > 6)
+        {
+            youTubeThumb = YoutubeUrl.Split('/')[1];
+        }
+
+        return "http://img.youtube.com/vi/" + youTubeThumb + "/mqdefault.jpg";
+    } }
+
+@*<tr>
+    <th>
+        @Html.ActionLink("title", "Index", new { sortOrder = ViewBag.NameSortParm })
+    </th>
+    <th>
+        About
+    </th>
+    <th>
+        @Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.DateSortParm })
+    </th>
+    <th></th>
+</tr>*@
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
+    </div>
+
+   
+
+    <div class="col-md-3">
+
+        <b>@Html.ActionLink("Views", "Index", new { sortOrder = ViewBag.ViewsSortParm })</b>
+    </div>
+    <div class="col-md-3">
+        <p><b>@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm })</b></p>
+    </div>
+</div>
 
 @foreach (var item in Model)
 {
 
-    <div class="row">
-        <div class="col-md-treciStupac">
-            <h2>
+<div class="row">
+  <script>
+      function clickImage() {
+            
+                            return ('Are you sure you want to watch following video: \n\n Video title:  @item.title  \n\n Price:   @item.price  BDoken \n\n Uploaded by:  @item.CertUser.username');
+                        }
+  </script>
+  
 
-                @*@Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID })*@
-       
-                @Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID },
-               new { onclick = "return confirm('Are you sure you want to watch following video: \\n " +
-               "\\n Video title: " + @item.title +
-               "\\n Price: " + @item.price + " BD" +
-               "\\n Uploaded by: " + @item.CertUser.username + "')"})
-                
+    <div class="col-md-3">
+        <h2>
 
-            </h2>
-        </div>
-
-
-
-
-        <div class="col-md-4">
-            <p background-color="gray">@item.about</p>
-        </div>
+            @*@Html.ActionLink(" ", "IncrementViewCount", "NavigationBar", new
+                {
+                    style = "background: url(@Url.Content(getYouTubeThumbnail(item.filepath)) no-repeat center right;display:block; height:24px; width:24px;"
+                })
+            *@
 
 
+            <a href="@Url.Action("IncrementViewCount", "NavigationBar",new { id = item.videoID })" onclick="return confirm(clickImage())">
+
+                <img alt="@item.title" src="@Url.Content(getYouTubeThumbnail(item.filepath))"  />
 
 
+                @*\\n Video title:   @item.title
+                     \\n Price:   @item.price  BDoken
+                     \\n Uploaded by:   @item.CertUser.username '  )
 
-        <div class="col-md-treciStupac">
 
-            <p>Owner > @item.CertUser.username </p>
-            <p>Views > @item.viewsCount </p>
-            <p>Price > @item.price BD</p>
+                        <img alt="@item.title" src="@Url.Content(getYouTubeThumbnail(item.filepath))" />
+                        @*<a>
+                    <img src="@Url.Content(getYouTubeThumbnail(item.filepath))" />
+                    @Html.ActionLink(" ", "IncrementViewCount", new { id = item.videoID },
+                         new
+                         {
+                             onclick = "return confirm('Are you sure you want to watch following video: \\n " +
+                         "\\n Video title: " + @item.title +
+                         "\\n Price: " + @item.price + " BDoken" +
+                         "\\n Uploaded by: " + @item.CertUser.username + "')"
+                         })*@
 
-        </div>
+            </a>
+
+        </h2>
     </div>
+
+
+    @*@Html.ActionLink(" ", "Index", "Countries", new
+        {
+            style = "background: url('../../Content/Images/table.png') no-repeat center right;display:block; height:24px; width:24px;"
+        })*@
+
+    <div class="col-md-3">
+        <p><b>@item.title </b></p>
+        <br />
+        <p background-color="gray">@item.about</p>
+    </div>
+
+
+
+    @*<div class="col-md-3">
+            <p><img src="@getYouTubeThumbnail(item.filepath)" alt="Thumbnail" /></p>
+        </div>*@
+
+    <div class="col-md-3">
+
+        <p>Owner > @item.CertUser.username </p>
+        <p>Views > @item.viewsCount </p>
+        
+
+    </div>
+    <div class="col-md-3">
+
+        <p>Price > @item.price BDoken</p>
+    </div>
+</div>
 }

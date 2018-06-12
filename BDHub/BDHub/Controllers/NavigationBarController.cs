@@ -13,15 +13,44 @@ namespace BDHub.Controllers
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
 
-        public ActionResult Index(int insufficientFunds = 0)
+        public ActionResult Index(string sortOrder)
         {
-            if (insufficientFunds == 0)
-                ViewBag.Message = "";
-            else
-                ViewBag.Message = "Not enough gold, milord.";
+            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortOrder) ? "Title" : "";
+            ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
+            ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
+
+            //if (insufficientFunds == 0)
+            //    ViewBag.Message = "";
+            //else
+            //    ViewBag.Message = "Not enough gold, milord.";
+
             var videos = from v in db.Videos
                          select v;
-            return View(videos);
+
+            switch (sortOrder)
+            {
+                case "Title":
+                    videos = videos.OrderByDescending(s => s.title);
+                    break;
+                case "Price":
+                    videos = videos.OrderBy(s => s.price);
+                    break;
+                case "price_desc":
+                    videos = videos.OrderByDescending(s => s.price);
+                    break;
+                case "Views":
+                    videos = videos.OrderBy(s => s.viewsCount);
+                    break;
+                case "views_desc":
+                    videos = videos.OrderByDescending(s => s.viewsCount);
+                    break;
+                default:
+                    videos = videos.OrderBy(s => s.title);
+                    break;
+            }
+            return View(videos.ToList());
+
+            //return View(videos);
         }
 
         public async Task<ActionResult> IncrementViewCount(int? id)
@@ -70,8 +99,10 @@ namespace BDHub.Controllers
                     return RedirectToAction("VideoPlayer", new { id });
                 }
             }
-            catch
+            catch(Exception e)
             {
+                if(e.Message == "gas required exceeds allowance or always failing transaction")
+                    return RedirectToAction("Index", new { insufficientFunds = 1 });
                 return Redirect("~/Login/Index");
             }
 

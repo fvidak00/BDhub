@@ -41,7 +41,7 @@ namespace BDHub.Models
         public string email { get; set; }
 
         [DisplayName("Bethernum Account Address")]
-        public string beternumAddress { get; set; }
+        public string beternumAddress { get; set; } = "";
 
         public string LoginErrorMessage { get; set; }
 
@@ -52,6 +52,8 @@ namespace BDHub.Models
         public string bdokenPass{ get; set; }
 
         public string infoMessage { get; set; } = "";
+
+        public bool bdokenAccountExist { get; set; } = false;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

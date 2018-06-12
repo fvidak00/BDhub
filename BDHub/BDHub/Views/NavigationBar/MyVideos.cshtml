@@ -59,16 +59,16 @@
         <h2>
             @*@Html.ActionLink("VideoPlayer", "NavigationBar",FormMethod.Post)
 
-        <img src="@getYouTubeThumbnail(item.filepath)" alt="@item.title" />*@
+                <img src="@getYouTubeThumbnail(item.filepath)" alt="@item.title" />*@
 
-            <a href="@Url.Action("IncrementViewCount", "NavigationBar",new { id = item.videoID })" >
+            <a href="@Url.Action("IncrementViewCount", "NavigationBar",new { id = item.videoID })">
                 <img alt="List View" src="@Url.Content(getYouTubeThumbnail(item.filepath))">
-               
+
             </a>
-                 @*Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID }) 
-                 @*<br />
-        <br />
-        <img src="@getYouTubeThumbnail(item.filepath)" alt="Thumbnail" />*@
+            @*Html.ActionLink(item.title, "IncrementViewCount", new { id = item.videoID })
+                         @*<br />
+                <br />
+                <img src="@getYouTubeThumbnail(item.filepath)" alt="Thumbnail" />*@
         </h2>
     </div>
 
@@ -77,8 +77,9 @@
         </div>*@
 
     <div class="col-md-3">
+        <p><b>@item.title </b></p>
         <br />
-        <p>@item.about</p>
+        <p background-color="gray">@item.about</p>
     </div>
 
     <div class="col-md-3">
@@ -90,7 +91,7 @@
 
     <div class="col-md-2">
         <br />
-        <p> @item.price BDoken</p>
+        <p> @item.price <b>BD</b></p>
 
 
     </div>

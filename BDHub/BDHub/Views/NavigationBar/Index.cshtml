@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<BDHub.Models.Video>
 
 @{
-    ViewBag.Title = "Bdots Home";
+    ViewBag.Title = "BDhub Home";
 }
 
 <script type="text/javascript">
@@ -53,7 +53,7 @@
     <th></th>
 </tr>*@
 <div class="row" id="navRow">
-    <div class="col-md-3">Sort by:</div>
+    <div class="col-md-3">Sort by: <b>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DefaultSortParm })</b></div>
     <div class="col-md-3">
         <div class="selected">
             <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
@@ -81,7 +81,7 @@
   <script>
       function clickImage() {
             
-                            return ('Are you sure you want to watch following video: \n\n Video title:  @item.title  \n\n Price:   @item.price  BDoken \n\n Uploaded by:  @item.CertUser.username');
+                            return ('Are you sure you want to watch following video: \n\n Video title:  @item.title  \n\n Price:   @item.price  BD \n\n Uploaded by:  @item.CertUser.username');
                         }
   </script>
   
@@ -149,7 +149,7 @@
     </div>
     <div class="col-md-3">
 
-        <p><b>Price</b> > @item.price <b>BDoken</b></p>
+        <p><b>Price</b> > @item.price <b>BD</b></p>
         <p><b>Owner</b> > @item.CertUser.username </p>
     </div>
 </div>

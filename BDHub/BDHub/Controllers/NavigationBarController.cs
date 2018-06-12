@@ -19,7 +19,8 @@ namespace BDHub.Controllers
 
         public ActionResult Index(string sortOrder)
         {
-            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortOrder) ? "Title" : "";
+            ViewBag.DefaultSortParm = String.IsNullOrEmpty(sortOrder) ? "VideoID" : "videoid_desc";
+            ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
 
@@ -33,7 +34,16 @@ namespace BDHub.Controllers
 
             switch (sortOrder)
             {
+                case "VideoID":
+                    videos = videos.OrderBy(s => s.videoID);
+                    break;
+                case "videoid_desc":
+                    videos = videos.OrderByDescending(s => s.videoID);
+                    break;
                 case "Title":
+                    videos = videos.OrderBy(s => s.title);
+                    break;
+                case "title_desc":
                     videos = videos.OrderByDescending(s => s.title);
                     break;
                 case "Price":
@@ -49,7 +59,7 @@ namespace BDHub.Controllers
                     videos = videos.OrderByDescending(s => s.viewsCount);
                     break;
                 default:
-                    videos = videos.OrderBy(s => s.title);
+                    videos = videos.OrderBy(s => s.videoID);
                     break;
             }
             return View(videos.ToList());
@@ -126,7 +136,7 @@ namespace BDHub.Controllers
 
         }
 
-        public async Task<ActionResult> MyProfile(int profileUpdated = 0)
+        public async Task<ActionResult> MyProfile(int profileUpdated = 0, int passwordUpdate = 0, int bdokenAccountCreated = 0)
         {
             try
             {
@@ -143,6 +153,34 @@ namespace BDHub.Controllers
                     case 2:
                         result.infoMessage = "Profile update failed. Please fill all fields";
                         break;
+                    case 0:
+                    default:
+                        result.infoMessage = "";
+                        break;
+                }
+
+                switch (passwordUpdate)
+                {
+
+                    case 1:
+                        result.infoMessage = "Password changed successfully.";
+                        break;
+                    case 2:
+                    case 3:
+                    case 0:
+                    default:
+                        result.infoMessage = "";
+                        break;
+                }
+
+                switch (bdokenAccountCreated)
+                {
+
+                    case 1:
+                        result.infoMessage = "BDoken account created successfully";
+                        break;
+                    case 2:
+                    case 3:
                     case 0:
                     default:
                         result.infoMessage = "";
@@ -177,12 +215,10 @@ namespace BDHub.Controllers
                                          where n.certUserID == id
                                          select n).SingleOrDefault();
 
-            //Need path and filename
-            string path = "";
-            string filename = "";
+            string filepath = GetFilePath();
 
             //Password
-            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(path, filename, "password");
+            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(filepath, "password");
             db.SaveChanges();
 
             return RedirectToAction("MyProfile");
@@ -325,15 +361,11 @@ namespace BDHub.Controllers
             return RedirectToAction("MyVideos");
         }
 
-        public ActionResult ChangePassword(int nesto = 0)
+        public ActionResult ChangePassword(int passwordFail = 0)
         {
 
-            switch (nesto)
+            switch (passwordFail)
             {
-
-                case 1:
-                    ViewBag.Message = "Password changed successfully.";
-                    break;
                 case 2:
                     ViewBag.Message = "Password change failed.";
                     break;
@@ -341,6 +373,7 @@ namespace BDHub.Controllers
                     ViewBag.Message = "Incorrect old password";
                     break;
                 case 0:
+                case 1:
                 default:
                     ViewBag.Message = "";
                     break;
@@ -349,7 +382,7 @@ namespace BDHub.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ChangePassword(System.Web.Mvc.FormCollection collection, int nesto = 0)
+        public ActionResult ChangePassword(System.Web.Mvc.FormCollection collection, int passwordFail = 0)
         {
             try
             {
@@ -365,16 +398,16 @@ namespace BDHub.Controllers
                     {
                         result.password = newPass;
                         db.SaveChanges();
-                        return RedirectToAction("ChangePassword", new { nesto = 1 });
+                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 1, bdokenAccountCreated = 0 });
                     }
                     else
                     {
-                        return RedirectToAction("ChangePassword", new { nesto = 3 });
+                        return RedirectToAction("ChangePassword", new { passwordFail = 3 });
                     }
                 }
                 catch
                 {
-                    return RedirectToAction("ChangePassword", new { nesto = 2 });
+                    return RedirectToAction("ChangePassword", new { passwordFail = 2 });
                 }
 
             }
@@ -420,14 +453,10 @@ namespace BDHub.Controllers
             }
         }
 
-        public ActionResult CreateBDokenAcc(int fid = 0)
+        public ActionResult CreateBDokenAcc(int bdokenAccountFailed = 0)
         {
-            switch (fid)
+            switch (bdokenAccountFailed)
             {
-
-                case 1:
-                    ViewBag.Message = "BDoken account created successfully";
-                    break;
                 case 2:
                     ViewBag.Message = "Passwords to not match.";
                     break;
@@ -435,6 +464,7 @@ namespace BDHub.Controllers
                     ViewBag.Message = "BDoken account creation failed.";
                     break;
                 case 0:
+                case 1:
                 default:
                     ViewBag.Message = "";
                     break;
@@ -442,7 +472,7 @@ namespace BDHub.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection collection)
+        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection collection, int bdokenAccountFailed = 0)
         {
             try
             {
@@ -461,21 +491,17 @@ namespace BDHub.Controllers
                         path = GetDirPath();
                         addingNewAddress.beternumAddress = BDC.CreateNew(path, password);
                         db.SaveChanges();
-                        addingNewAddress.infoMessage = "BDoken account created successfully.";
-                        return RedirectToAction("CreateBDokenAcc", new { fid = 1 });
+                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 0, bdokenAccountCreated = 1 });
                     }
                     else
                     {
-                        addingNewAddress.infoMessage = "Passwords to not match.";
-                        return RedirectToAction("CreateBDokenAcc", new { fid = 2 });
+                        return RedirectToAction("CreateBDokenAcc", new { bdokenAccountFailed = 2 });
                     }
                 }
                 catch
                 {
-                    addingNewAddress.infoMessage = "BDoken account creation failed.";
-                    return RedirectToAction("CreateBDokenAcc", new { fid = 3 });
-                }
-               
+                    return RedirectToAction("CreateBDokenAcc", new { bdokenAccountFailed = 3 });
+                }            
             }
             catch
             {
@@ -486,7 +512,7 @@ namespace BDHub.Controllers
         public string GetDirPath()
         {
             string selectedPath = "";
-            var t = new Thread((ThreadStart)(() =>
+            var t = new Thread(() =>
             {
 
                 FolderBrowserDialog fbd = new FolderBrowserDialog
@@ -506,7 +532,7 @@ namespace BDHub.Controllers
                 selectedPath = fbd.SelectedPath;
 
 
-            }));
+            });
 
             t.SetApartmentState(ApartmentState.STA);
             t.Start();
@@ -514,16 +540,19 @@ namespace BDHub.Controllers
 
             return selectedPath;
         }
+
         public string GetFilePath()
         {
             string filePath = "";
             string[] arrAllFiles;
-            var t = new Thread((ThreadStart)(() =>
+            var t = new Thread(() =>
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "All Files (*.*)|*.*";
-                ofd.FilterIndex = 1;
-                ofd.Multiselect = false;
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Filter = "All Files (*.*)|*.*",
+                    FilterIndex = 1,
+                    Multiselect = false
+                };
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
@@ -531,7 +560,7 @@ namespace BDHub.Controllers
                     arrAllFiles = ofd.FileNames; //used when Multiselect = true           
                 }
 
-            }));
+            });
 
             t.SetApartmentState(ApartmentState.STA);
             t.Start();

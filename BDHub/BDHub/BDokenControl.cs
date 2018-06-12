@@ -4,8 +4,6 @@ using Nethereum.Web3.Accounts.Managed;
 using System.Numerics;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Contracts;
-using BDHub.Models;
-using System.Linq;
 using Nethereum.KeyStore;
 using System.IO;
 
@@ -41,9 +39,9 @@ namespace BDHub
         }
 
         //Prototype
-        public string LoadFromKeystore(string path, string filename, string password)
+        public string LoadFromKeystore(string filepath, string password)
         {
-            using (var oldFile = File.OpenText(Path.Combine(path, filename)))
+            using (var oldFile = File.OpenText(filepath))
             {
                 string json = oldFile.ReadToEnd();
                 string addressStart = @"""address"":""";

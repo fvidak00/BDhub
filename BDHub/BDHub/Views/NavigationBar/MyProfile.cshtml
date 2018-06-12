@@ -5,7 +5,7 @@
 }
 
 <script type="text/javascript">
-    var profileUpdated = "@ViewBag.Message";
+    var profileUpdated = "@Model.infoMessage";
     if (!(profileUpdated===""))
         alert(profileUpdated);
 </script>
@@ -57,10 +57,10 @@
         <div class="form-group">
             @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                
-                @Html.EditorFor(model => model.email,new {htmlAttributes = new { @class = "form-control text-box single-line" } })   
+
+                @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control text-box single-line" } })
                 @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
-                
+
             </div>
         </div>
 
@@ -74,7 +74,6 @@
                 @Html.ActionLink("Create BDoken Account", "CreateBDokenAcc", "NavigationBar", new { @class = "btn btn-default" })
                 <br /><br />
                 @Html.ActionLink("Create BDoken account from existing keystore", "LoadBDokenAccount", "NavigationBar", new { @class = "btn btn-default" })
-
             </div>
         </div>
     </div>

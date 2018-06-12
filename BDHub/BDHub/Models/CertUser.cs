@@ -26,13 +26,13 @@ namespace BDHub.Models
 
         [DisplayName("Username")]
         [Required(ErrorMessage = "This field is required")]
-        public string username { get; set; }
+        public string username { get; set; } 
 
         [DisplayName("First name")]
-        public string firstName { get; set; }
+        public string firstName { get; set; } = "";
 
         [DisplayName("Last name")]
-        public string lastName { get; set; }
+        public string lastName { get; set; } = "";
 
         [Required(ErrorMessage = "This field is required")]
         public string password { get; set; }
@@ -49,8 +49,9 @@ namespace BDHub.Models
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal balance { get; set; }
 
-        [DisplayName("Password for BDoken Account")]
         public string bdokenPass{ get; set; }
+
+        public string infoMessage { get; set; } = "";
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

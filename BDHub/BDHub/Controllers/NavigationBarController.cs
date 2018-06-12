@@ -103,9 +103,9 @@ namespace BDHub.Controllers
                     return RedirectToAction("VideoPlayer", new { id });
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                if(e.Message == "gas required exceeds allowance or always failing transaction")
+                if (e.Message == "gas required exceeds allowance or always failing transaction")
                     return RedirectToAction("Index", new { insufficientFunds = 1 });
                 return Redirect("~/Login/Index");
             }
@@ -131,24 +131,23 @@ namespace BDHub.Controllers
             try
             {
                 int id = (int)Session["userID"];
+                var result = (from c in db.CertUsers
+                              where c.certUserID == id
+                              select c).SingleOrDefault();
 
                 switch (profileUpdated)
                 {
                     case 1:
-                        ViewBag.Message = "Profile updated successfully.";
+                        result.infoMessage = "Profile updated successfully.";
                         break;
                     case 2:
-                        ViewBag.Message = "Profile update failed. Please fill all fields";
+                        result.infoMessage = "Profile update failed. Please fill all fields";
                         break;
                     case 0:
                     default:
-                        ViewBag.Message = "";
+                        result.infoMessage = "";
                         break;
                 }
-
-                var result = (from c in db.CertUsers
-                              where c.certUserID == id
-                              select c).SingleOrDefault();
 
                 //Add password input
                 try
@@ -170,20 +169,6 @@ namespace BDHub.Controllers
 
         }
 
-        public ActionResult CreateNewBDokenAccount()
-        {
-            int id = (int)Session["userID"];
-
-            CertUser addingNewAddress = (from n in db.CertUsers
-                           where n.certUserID == id
-                           select n).SingleOrDefault();
-
-            addingNewAddress.beternumAddress = BDC.CreateNew("password");
-            db.SaveChanges();
-
-            return RedirectToAction("MyProfile");
-        }
-
         public ActionResult LoadBDokenAccount()
         {
             int id = (int)Session["userID"];
@@ -196,6 +181,7 @@ namespace BDHub.Controllers
             string path = "";
             string filename = "";
 
+            //Password
             addingNewAddress.beternumAddress = BDC.LoadFromKeystore(path, filename, "password");
             db.SaveChanges();
 
@@ -234,8 +220,8 @@ namespace BDHub.Controllers
                 int sid = (int)Session["userID"];
 
                 var actor = (from a in db.CertUsers
-                               where a.certUserID == sid
-                               select a).SingleOrDefault();
+                             where a.certUserID == sid
+                             select a).SingleOrDefault();
 
                 var transactions = from t in db.Payments
                                    where (t.payerUsername.Equals(actor.username) || t.receiverUsername.Equals(actor.username))
@@ -365,8 +351,6 @@ namespace BDHub.Controllers
         [HttpPost]
         public ActionResult ChangePassword(System.Web.Mvc.FormCollection collection, int nesto = 0)
         {
-
-
             try
             {
                 int id = (int)Session["userID"];
@@ -436,19 +420,74 @@ namespace BDHub.Controllers
             }
         }
 
-        public ActionResult CreateBDokenAcc()
+        public ActionResult CreateBDokenAcc(int fid = 0)
         {
+            switch (fid)
+            {
+
+                case 1:
+                    ViewBag.Message = "BDoken account created successfully";
+                    break;
+                case 2:
+                    ViewBag.Message = "Passwords to not match.";
+                    break;
+                case 3:
+                    ViewBag.Message = "BDoken account creation failed.";
+                    break;
+                case 0:
+                default:
+                    ViewBag.Message = "";
+                    break;
+            }
             return View();
         }
         [HttpPost]
-        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection colletion)
+        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection collection)
         {
-            return RedirectToAction("");
+            try
+            {
+                int id = (int)Session["userID"];
+                CertUser addingNewAddress = (from n in db.CertUsers
+                                             where n.certUserID == id
+                                             select n).SingleOrDefault();
+                string path = "";
+
+                try
+                {
+                    string password = collection[2];
+                    string retyped = collection[3];
+                    if (password == retyped)
+                    {
+                        path = GetDirPath();
+                        addingNewAddress.beternumAddress = BDC.CreateNew(path, password);
+                        db.SaveChanges();
+                        addingNewAddress.infoMessage = "BDoken account created successfully.";
+                        return RedirectToAction("CreateBDokenAcc", new { fid = 1 });
+                    }
+                    else
+                    {
+                        addingNewAddress.infoMessage = "Passwords to not match.";
+                        return RedirectToAction("CreateBDokenAcc", new { fid = 2 });
+                    }
+                }
+                catch
+                {
+                    addingNewAddress.infoMessage = "BDoken account creation failed.";
+                    return RedirectToAction("CreateBDokenAcc", new { fid = 3 });
+                }
+               
+            }
+            catch
+            {
+                return Redirect("~/Login/Index");
+            }
         }
-        public string SaveAccount()
+
+        public string GetDirPath()
         {
-            string selectedPath="";
-            var t = new Thread((ThreadStart)(() => {
+            string selectedPath = "";
+            var t = new Thread((ThreadStart)(() =>
+            {
 
                 FolderBrowserDialog fbd = new FolderBrowserDialog
                 {
@@ -459,14 +498,14 @@ namespace BDHub.Controllers
 
 
                 DialogResult result = fbd.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                // the code here will be executed if the user presses Open in
-                // the dialog.
-            }
-            selectedPath = fbd.SelectedPath;
+                if (result == DialogResult.OK)
+                {
+                    // the code here will be executed if the user presses Open in
+                    // the dialog.
+                }
+                selectedPath = fbd.SelectedPath;
 
-                
+
             }));
 
             t.SetApartmentState(ApartmentState.STA);

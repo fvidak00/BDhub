@@ -153,8 +153,15 @@ namespace BDHub.Controllers
                               select c).SingleOrDefault();
 
                 //Add password input
-                BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
-                result.balance = (decimal)userBalance / 1000000000000000000;
+                try
+                {
+                    BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
+                    result.balance = (decimal)userBalance / 1000000000000000000;
+                }
+                catch
+                {
+                    result.balance = 0;
+                }
 
                 return View(result);
             }
@@ -163,6 +170,38 @@ namespace BDHub.Controllers
                 return Redirect("~/Login/Index");
             }
 
+        }
+
+        public ActionResult CreateNewBDokenAccount()
+        {
+            int id = (int)Session["userID"];
+
+            CertUser addingNewAddress = (from n in db.CertUsers
+                           where n.certUserID == id
+                           select n).SingleOrDefault();
+
+            addingNewAddress.beternumAddress = BDC.CreateNew("password");
+            db.SaveChanges();
+
+            return RedirectToAction("MyProfile");
+        }
+
+        public ActionResult LoadBDokenAccount()
+        {
+            int id = (int)Session["userID"];
+
+            CertUser addingNewAddress = (from n in db.CertUsers
+                                         where n.certUserID == id
+                                         select n).SingleOrDefault();
+
+            //Need path and filename
+            string path = "";
+            string filename = "";
+
+            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(path, filename, "password");
+            db.SaveChanges();
+
+            return RedirectToAction("MyProfile");
         }
 
         public ActionResult MyVideos()

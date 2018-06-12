@@ -18,15 +18,15 @@ namespace BDHub.Controllers
             return View();
         }
 
+        BDEntities connection = new BDEntities();
+        BDokenControl BDC = new BDokenControl();
+
         [HttpPost]
-
-        public async Task<JsonResult> SaveUser(CertUser newCertUser)
+        public JsonResult SaveUser(CertUser newCertUser)
+        //public JsonResult SaveUser(CertUser newCertUser)
         {
-            int state;
-
-
-            BDEntities connection = new BDEntities();
-            BDokenControl BDC = new BDokenControl();
+            int state = 0;
+            
             //string poruka = "amen chao";
             List<CertUser> ListOfUsers = connection.CertUsers.ToList();
 
@@ -48,15 +48,14 @@ namespace BDHub.Controllers
             //String password = Membership.GeneratePassword(8, 0);
             String password = Guid.NewGuid().ToString().Substring(0, 8);
             state = MessageSend(newCertUser.email, password, newCertUser.username);
+
             if (state == 0)
             {
                 newCertUser.password = password;
-                //Need 2nd passwords
-                //New unchangeable just for BDoken
-                newCertUser.beternumAddress = await BDC.CreateNew("password");
-
+                newCertUser.beternumAddress = "";
                 connection.CertUsers.Add(newCertUser);
                 connection.SaveChanges();
+
             }
             else
             {
@@ -64,11 +63,11 @@ namespace BDHub.Controllers
                 return Json(state, JsonRequestBehavior.AllowGet);
             }
 
-            
+
             return Json(state, JsonRequestBehavior.AllowGet);
         }
 
-        public int MessageSend(String mail, String password,String username)
+        public int MessageSend(String mail, String password, String username)
         {
             try
             {
@@ -77,7 +76,7 @@ namespace BDHub.Controllers
                 mailMessage.From = new MailAddress("bdots1@outlook.com");
 
                 mailMessage.Subject = "Welcome to bdots server";
-                mailMessage.Body = "Username: "+username+"\nPassword:  " + password;
+                mailMessage.Body = "Username: " + username + "\nPassword:  " + password;
 
                 SmtpClient smtpClient = new SmtpClient("smtp.live.com", 587)
                 {
@@ -91,7 +90,7 @@ namespace BDHub.Controllers
             }
             catch
             {
-                return -1;
+                return 3;
             }
 
         }

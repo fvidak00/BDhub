@@ -49,6 +49,9 @@ namespace BDHub.Models
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal balance { get; set; }
 
+        [DisplayName("Password for BDoken Account")]
+        public string bdokenPass{ get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }
     }

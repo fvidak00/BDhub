@@ -21,7 +21,7 @@ namespace BDHub.Models
         {
             this.Videos = new HashSet<Video>();
         }
-    
+
         public int certUserID { get; set; }
 
         [DisplayName("Username")]

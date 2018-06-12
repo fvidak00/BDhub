@@ -5,9 +5,15 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using BDHub.Models;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
+using System.Windows.Forms;
+using System.Threading;
+
 
 namespace BDHub.Controllers
 {
+    
     public class NavigationBarController : Controller
     {
         private BDEntities db = new BDEntities();
@@ -258,7 +264,7 @@ namespace BDHub.Controllers
 
         }
         [HttpPost]
-        public ActionResult Edit(FormCollection collection)
+        public ActionResult Edit(System.Web.Mvc.FormCollection collection)
         {
             try
             {
@@ -304,7 +310,7 @@ namespace BDHub.Controllers
             }
         }
         [HttpPost]
-        public ActionResult EditVideo(int? id, FormCollection coll)
+        public ActionResult EditVideo(int? id, System.Web.Mvc.FormCollection coll)
         {
             try
             {
@@ -359,7 +365,7 @@ namespace BDHub.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ChangePassword(FormCollection collection, int nesto = 0)
+        public ActionResult ChangePassword(System.Web.Mvc.FormCollection collection, int nesto = 0)
         {
 
 
@@ -431,5 +437,44 @@ namespace BDHub.Controllers
                 return View("ForgotPassword", userModel);
             }
         }
+
+        public ActionResult CreateBDokenAcc()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection colletion)
+        {
+            return RedirectToAction("");
+        }
+        public string SaveAccount()
+        {
+            string selectedPath="";
+            var t = new Thread((ThreadStart)(() => {
+
+                FolderBrowserDialog fbd = new FolderBrowserDialog();
+           fbd.ShowNewFolderButton = false;
+           fbd.RootFolder = System.Environment.SpecialFolder.MyComputer;
+
+
+
+            DialogResult result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                // the code here will be executed if the user presses Open in
+                // the dialog.
+            }
+            selectedPath = fbd.SelectedPath;
+
+                
+            }));
+
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+            t.Join();
+
+            return selectedPath;
+        }
+
     }
 }

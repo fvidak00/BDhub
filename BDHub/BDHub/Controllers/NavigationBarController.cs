@@ -5,15 +5,13 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using BDHub.Models;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.IO;
 using System.Windows.Forms;
 using System.Threading;
 
 
 namespace BDHub.Controllers
 {
-    
+
     public class NavigationBarController : Controller
     {
         private BDEntities db = new BDEntities();
@@ -452,13 +450,15 @@ namespace BDHub.Controllers
             string selectedPath="";
             var t = new Thread((ThreadStart)(() => {
 
-                FolderBrowserDialog fbd = new FolderBrowserDialog();
-           fbd.ShowNewFolderButton = false;
-           fbd.RootFolder = System.Environment.SpecialFolder.MyComputer;
+                FolderBrowserDialog fbd = new FolderBrowserDialog
+                {
+                    ShowNewFolderButton = false,
+                    RootFolder = System.Environment.SpecialFolder.MyComputer
+                };
 
 
 
-            DialogResult result = fbd.ShowDialog();
+                DialogResult result = fbd.ShowDialog();
             if (result == DialogResult.OK)
             {
                 // the code here will be executed if the user presses Open in

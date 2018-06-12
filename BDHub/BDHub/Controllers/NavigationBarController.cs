@@ -514,6 +514,30 @@ namespace BDHub.Controllers
 
             return selectedPath;
         }
+        public string GetFilePath()
+        {
+            string filePath = "";
+            string[] arrAllFiles;
+            var t = new Thread((ThreadStart)(() =>
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "All Files (*.*)|*.*";
+                ofd.FilterIndex = 1;
+                ofd.Multiselect = false;
 
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = ofd.FileName;
+                    arrAllFiles = ofd.FileNames; //used when Multiselect = true           
+                }
+
+            }));
+
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+            t.Join();
+
+            return filePath;
+        }
     }
 }

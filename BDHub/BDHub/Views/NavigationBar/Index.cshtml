@@ -1,24 +1,14 @@
 ﻿@model IEnumerable<BDHub.Models.Video>
 
 @{
-    ViewBag.Title = "Bdots Home";
-
-
-
+    ViewBag.Title = "BDhub Home";
 }
 
 <script type="text/javascript">
     var notEnoughGoldMessage = "@ViewBag.Message";
     if (!(notEnoughGoldMessage===""))
         alert(notEnoughGoldMessage);
-
-    function clickImage() {
-        var tekst =@ViewBag.confirm+"nesto";
-        
-            return alert(tekst);
-        }
 </script>
-
 
 @{ string getYouTubeThumbnail(string YoutubeUrl)
     {
@@ -56,21 +46,22 @@
         return 0;
     } }
 
-
-<div class="row">
-    <div class="col-md-3"></div>
+<div class="row" id="navRow">
+    <div class="col-md-3">Sort by: <b>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DefaultSortParm })</b></div>
     <div class="col-md-3">
-        <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
-    </div>
-
-   
-
-    <div class="col-md-3">
-
-        <b>@Html.ActionLink("Views", "Index", new { sortOrder = ViewBag.ViewsSortParm })</b>
+        <div class="selected">
+            <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
+        </div>
     </div>
     <div class="col-md-3">
-        <p><b>@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm })</b></p>
+        <div class="selected">
+            <b>@Html.ActionLink("Views", "Index", new { sortOrder = ViewBag.ViewsSortParm })</b>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="selected">
+            <p><b>@Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.PriceSortParm })</b></p>
+        </div>
     </div>
 </div>
 
@@ -78,48 +69,31 @@
 {
 
 <div class="row">
-  
-  
-    
     <div class="col-md-3" >
         <h2>
-
-
-           
-
             @Html.ActionLink(" ","IncrementViewCount", new { id = item.videoID }, new {
            style = "background: url("+Url.Content(getYouTubeThumbnail(item.filepath))+ ") no-repeat center ;display:block; height:146.25px; width:260px;",
-
-
            onclick = "return confirm('Are you sure you want to watch following video: \\n " +
                      "\\n Video title: " + @item.title +
                      "\\n Price: " + @item.price + " BDoken" +
                      "\\n Uploaded by: " + @item.CertUser.username + "')"
        })
-
         </h2>
     </div>
 
-
-  
     <div class="col-md-3">
         <p><b>@item.title </b></p>
         <br />
         <p background-color="gray">@item.about</p>
     </div>
 
-
-
     <div class="col-md-3">
-
-        <p>Owner > @item.CertUser.username </p>
-        <p>Views > @item.viewsCount </p>
-        
-
+        <p>@item.viewsCount </p>
     </div>
+      
     <div class="col-md-3">
-
-        <p>Price > @item.price BDoken</p>
+        <p><b>Price</b> > @item.price <b>BD</b></p>
+        <p><b>Owner</b> > @item.CertUser.username </p>
     </div>
 </div>
 }

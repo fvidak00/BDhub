@@ -17,11 +17,11 @@
             <h2>Registration</h2>
             <form name="Form">
                 First name:<input type="text" name="firstname" placeholder="Enter first name" data-ng-model="certuser.firstname" required />
-                <span ng-show="Form.firstname.$touched&& Form.firstname.$invalid">The first name is required.</span>
+                @*<span ng-show="Form.firstname.$touched&& Form.firstname.$invalid">The first name is required.</span>*@
                 <br />
                 <br />
                 Last name:<input type="text" name="lastname" placeholder="Enter last name" data-ng-model="certuser.lastname" required /><br />
-                <span ng-show="Form.lastname.$touched&& Form.lastname.$invalid">The last name is required.</span>
+                @*<span ng-show="Form.lastname.$touched&& Form.lastname.$invalid">The last name is required.</span>*@
                 <br />
                 <br />
                 <p>
@@ -31,9 +31,12 @@
 
                 <br />
                 Email:<input type="email" placeholder="Enter email" @*validate-email*@ name="email" data-ng-model="certuser.email" required />
+
                 <span ng-show="Form.email.$touched && Form.email.$invalid ">The email is required.</span>
                 <span ng-show="Form.email.$touched && Form.email.$error.email">Invalid email address.</span>
+
                 <br />
+
                 <br />
                 <input type="button" class="registerbtn" value="Save" name="btnSave" ng-click="savedata(certuser)" ng-disabled="Form.$invalid" />
             </form>

@@ -1,7 +1,7 @@
 ﻿@model BDHub.Models.CertUser
 
 @{
-    ViewBag.Title = "ChangePassword";
+    ViewBag.Title = "CreateBDokenAcc";
 }
 
 <script type="text/javascript">
@@ -10,10 +10,9 @@
         alert(profileUpdated);
 </script>
 
+<h2>Create BDoken Account</h2>
 
-<h2>Change Password</h2>
-
-@using (Html.BeginForm("ChangePassword", "NavigationBar", FormMethod.Post))
+@using (Html.BeginForm("CreateBDokenAcc", "NavigationBar", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
 
@@ -25,31 +24,26 @@
 
 
         <div class="form-group">
-            @Html.Label("Old password", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("BDoken password", htmlAttributes: new { @class = "control-label col-md-2" })
             @*@Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })*@
             <div class="col-md-10">
-                @Html.PasswordFor(model => model.password, new { Name = "OldPassword", htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.password, new { Name = "TypePassword", htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.Label("New password", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Repeat BDoken password", htmlAttributes: new { @class = "control-label col-md-2" })
             @*@Html.LabelFor(model => model.password, htmlAttributes: new { @class = "control-label col-md-2" })*@
             <div class="col-md-10">
-                @Html.PasswordFor(model => model.password, new { Name = "NewPassword", htmlAttributes = new { @class = "form-control" } })
+                @Html.PasswordFor(model => model.password, new { Name = "RetypePassword", htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.password, "", new { @class = "text-danger" })
             </div>
         </div>
-
-
-
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save Password" class="btn btn-default" />
+                <input type="submit" value="Create account" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
-

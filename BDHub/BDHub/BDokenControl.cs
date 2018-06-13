@@ -4,8 +4,8 @@ using Nethereum.Web3.Accounts.Managed;
 using System.Numerics;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Contracts;
-using BDHub.Models;
-using System.Linq;
+using Nethereum.KeyStore;
+using System.IO;
 
 namespace BDHub
 {
@@ -15,21 +15,43 @@ namespace BDHub
         readonly string abi = @"[{""constant"":true,""inputs"":[],""name"":""name"",""outputs"":[{""name"":"""",""type"":""string""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""totalSupply"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""decimals"",""outputs"":[{""name"":"""",""type"":""uint8""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""_to"",""type"":""address""},{""name"":""_value"",""type"":""uint256""}],""name"":""PayUp"",""outputs"":[{""name"":""success"",""type"":""bool""}],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""newSellPrice"",""type"":""uint256""},{""name"":""newBuyPrice"",""type"":""uint256""}],""name"":""SetPrices"",""outputs"":[],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""CheckBalance"",""outputs"":[{""name"":""balance"",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""sellPrice"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""amount"",""type"":""uint256""}],""name"":""Sell"",""outputs"":[{""name"":""revenue"",""type"":""uint256""}],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""address""}],""name"":""balanceOf"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""buyPrice"",""outputs"":[{""name"":"""",""type"":""uint256""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""owner"",""outputs"":[{""name"":"""",""type"":""address""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[],""name"":""BloodForTheBloodGod"",""outputs"":[{""name"":""success"",""type"":""bool""}],""payable"":true,""stateMutability"":""payable"",""type"":""function""},{""constant"":true,""inputs"":[],""name"":""symbol"",""outputs"":[{""name"":"""",""type"":""string""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[],""name"":""Buy"",""outputs"":[{""name"":""amount"",""type"":""uint256""}],""payable"":true,""stateMutability"":""payable"",""type"":""function""},{""constant"":true,""inputs"":[{""name"":""_value"",""type"":""uint256""}],""name"":""CheckRequiredFunds"",""outputs"":[{""name"":""enough"",""type"":""bool""}],""payable"":false,""stateMutability"":""view"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""newOwner"",""type"":""address""}],""name"":""TransferOwnership"",""outputs"":[],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""constant"":false,""inputs"":[{""name"":""target"",""type"":""address""},{""name"":""mintedAmount"",""type"":""uint256""}],""name"":""MintToken"",""outputs"":[],""payable"":false,""stateMutability"":""nonpayable"",""type"":""function""},{""inputs"":[{""name"":""initialSupply"",""type"":""uint256""},{""name"":""tokenName"",""type"":""string""},{""name"":""tokenSymbol"",""type"":""string""},{""name"":""centralMinter"",""type"":""address""},{""name"":""sellPr"",""type"":""uint256""},{""name"":""buyPr"",""type"":""uint256""}],""payable"":false,""stateMutability"":""nonpayable"",""type"":""constructor""},{""anonymous"":false,""inputs"":[{""indexed"":true,""name"":""from"",""type"":""address""},{""indexed"":true,""name"":""to"",""type"":""address""},{""indexed"":false,""name"":""value"",""type"":""uint256""}],""name"":""TransferEvent"",""type"":""event""}]";
         readonly string testnetURL = "http://192.168.21.50:52353";
 
-        private BDEntities db = new BDEntities();
-        
         //Create new account, returns account address
-        //Triba se riješit plaintexta
-        public async Task<string> CreateNew(string password)
+        public string CreateNew(string path, string password)
         {
-            var web3 = new Web3Geth();
-            string newAddress = await web3.Personal.NewAccount.SendRequestAsync(password);
+            Nethereum.Signer.EthECKey ecKey = Nethereum.Signer.EthECKey.GenerateKey();
+            string address = ecKey.GetPublicAddress();
+            KeyStoreService service = new KeyStoreService();
+            string encryptedKey = service.EncryptAndGenerateDefaultKeyStoreAsJson(password, ecKey.GetPrivateKeyAsBytes(), address);
+            string filename = service.GenerateUTCFileName(address);
 
-            string head = (from h in db.CertUsers
-                       where h.certUserID == 1
-                       select h.beternumAddress).ToString();
-            await MintToken(head, "password", newAddress, 10000000000000000000);
-            return newAddress;
+            SaveToKeystore(path, filename, encryptedKey);
+
+            return address;
         }
+
+        public void SaveToKeystore(string path, string filename, string encryptedKey)
+        {
+            using (var newFile = File.CreateText(Path.Combine(path, filename)))
+            {
+                newFile.Write(encryptedKey);
+                newFile.Flush();
+            }
+        }
+
+        public string LoadFromKeystore(string filepath, string password)
+        {
+            using (var oldFile = File.OpenText(filepath))
+            {
+                string json = oldFile.ReadToEnd();
+                string addressStart = @"""address"":""";
+                string addressEnd = @""",""version""";
+                int indexOfStart = json.IndexOf(addressStart) + addressStart.Length;
+                int indexOfEnd = json.IndexOf(addressEnd);
+                return json.Substring(indexOfStart, indexOfEnd-indexOfStart);
+            }
+        }
+
+
         //ContractToNethereum function parser
         public Function GetFunction(string senderAddress, string password, string contractFunction)
         {
@@ -87,6 +109,7 @@ namespace BDHub
             await CallFunction(senderAddress, receiverAddress, value, transfer);
         }
 
+        //wtf
         public async Task MintToken(string senderAddress, string password, string receiverAddress, BigInteger value)
         {
             Function mintToken = GetFunction(senderAddress, password, "MintToken");

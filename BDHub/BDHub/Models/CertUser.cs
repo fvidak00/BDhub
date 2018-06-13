@@ -21,18 +21,18 @@ namespace BDHub.Models
         {
             this.Videos = new HashSet<Video>();
         }
-    
+
         public int certUserID { get; set; }
 
         [DisplayName("Username")]
         [Required(ErrorMessage = "This field is required")]
-        public string username { get; set; }
+        public string username { get; set; } 
 
         [DisplayName("First name")]
-        public string firstName { get; set; }
+        public string firstName { get; set; } = "";
 
         [DisplayName("Last name")]
-        public string lastName { get; set; }
+        public string lastName { get; set; } = "";
 
         [Required(ErrorMessage = "This field is required")]
         public string password { get; set; }
@@ -41,13 +41,19 @@ namespace BDHub.Models
         public string email { get; set; }
 
         [DisplayName("Bethernum Account Address")]
-        public string beternumAddress { get; set; }
+        public string beternumAddress { get; set; } = "";
 
         public string LoginErrorMessage { get; set; }
 
         [DisplayName("BD Balance")]
-        [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
+        [DisplayFormat(DataFormatString = "{0:0,00000000000000000000}")]
         public decimal balance { get; set; }
+
+        public string bdokenPass{ get; set; }
+
+        public string infoMessage { get; set; } = "";
+
+        public bool bdokenAccountExist { get; set; } = false;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

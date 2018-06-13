@@ -5,9 +5,13 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using BDHub.Models;
+using System.Windows.Forms;
+using System.Threading;
+
 
 namespace BDHub.Controllers
 {
+
     public class NavigationBarController : Controller
     {
         private BDEntities db = new BDEntities();
@@ -15,7 +19,8 @@ namespace BDHub.Controllers
 
         public IQueryable<Video> VideoSort(string sortOrder, int stat)
         {
-            ViewBag.TitleSortParm = String.IsNullOrEmpty(sortOrder) ? "Title" : "";
+            ViewBag.DefaultSortParm = sortOrder == "videoid_desc" ? "VideoID" : "videoid_desc";
+            ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
             IQueryable<Video> videos;
@@ -36,7 +41,16 @@ namespace BDHub.Controllers
 
             switch (sortOrder)
             {
+                case "VideoID":
+                    videos = videos.OrderBy(s => s.videoID);
+                    break;
+                case "videoid_desc":
+                    videos = videos.OrderByDescending(s => s.videoID);
+                    break;
                 case "Title":
+                    videos = videos.OrderBy(s => s.title);
+                    break;
+                case "title_desc":
                     videos = videos.OrderByDescending(s => s.title);
                     break;
                 case "Price":
@@ -52,17 +66,12 @@ namespace BDHub.Controllers
                     videos = videos.OrderByDescending(s => s.viewsCount);
                     break;
                 default:
-                    videos = videos.OrderBy(s => s.title);
+                    videos = videos.OrderBy(s => s.videoID);
                     break;
 
 
             }
-
-
-
             return videos;
-
-
         }
         
 
@@ -134,8 +143,10 @@ namespace BDHub.Controllers
                     return RedirectToAction("VideoPlayer", new { id });
                 }
             }
-            catch
+            catch (Exception e)
             {
+                if (e.Message == "gas required exceeds allowance or always failing transaction")
+                    return RedirectToAction("Index", new { insufficientFunds = 1 });
                 return Redirect("~/Login/Index");
             }
 
@@ -155,11 +166,14 @@ namespace BDHub.Controllers
 
         }
 
-        public async Task<ActionResult> MyProfile(int profileUpdated = 0)
+        public async Task<ActionResult> MyProfile(int profileUpdated = 0, int passwordUpdate = 0, int bdokenAccountCreated = 0)
         {
             try
             {
                 int id = (int)Session["userID"];
+                var result = (from c in db.CertUsers
+                              where c.certUserID == id
+                              select c).SingleOrDefault();
 
                 switch (profileUpdated)
                 {
@@ -174,14 +188,36 @@ namespace BDHub.Controllers
                         ViewBag.Message = "";
                         break;
                 }
+                
+                switch (passwordUpdate)
+                {
+                    case 1:
+                        ViewBag.Message = "Password changed successfully.";
+                        break;
+                    default:
+                        break;
+                }
 
-                var result = (from c in db.CertUsers
-                              where c.certUserID == id
-                              select c).SingleOrDefault();
+                switch (bdokenAccountCreated)
+                {
+
+                    case 1:
+                        ViewBag.Message = "BDoken account created successfully";
+                        break;
+                    default:
+                        break;
+                }
 
                 //Add password input
-                BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
-                result.balance = (decimal)userBalance / 1000000000000000000;
+                try
+                {
+                    BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
+                    result.balance = (decimal)userBalance / 1000000000000000000;
+                }
+                catch
+                {
+                    result.balance = 0;
+                }
 
                 return View(result);
             }
@@ -192,6 +228,28 @@ namespace BDHub.Controllers
 
         }
 
+        public ActionResult LoadBDokenAccount()
+        {
+            int id = (int)Session["userID"];
+
+            CertUser addingNewAddress = (from n in db.CertUsers
+                                         where n.certUserID == id
+                                         select n).SingleOrDefault();
+
+            string filepath = GetFilePath();
+
+            if(filepath == "")
+            {
+                return RedirectToAction("MyProfile");
+            }
+
+            //Password
+            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(filepath, "password");
+            db.SaveChanges();
+
+            return RedirectToAction("MyProfile");
+        }
+        
         public ActionResult MyVideos(string sortOrder)
         {
             try
@@ -221,8 +279,8 @@ namespace BDHub.Controllers
                 int sid = (int)Session["userID"];
 
                 var actor = (from a in db.CertUsers
-                               where a.certUserID == sid
-                               select a).SingleOrDefault();
+                             where a.certUserID == sid
+                             select a).SingleOrDefault();
 
                 var transactions = from t in db.Payments
                                    where (t.payerUsername.Equals(actor.username) || t.receiverUsername.Equals(actor.username))
@@ -249,7 +307,7 @@ namespace BDHub.Controllers
 
         }
         [HttpPost]
-        public ActionResult Edit(FormCollection collection)
+        public ActionResult Edit(System.Web.Mvc.FormCollection collection)
         {
             try
             {
@@ -264,15 +322,15 @@ namespace BDHub.Controllers
                            result.email != null)
                         {
                             db.SaveChanges();
-                            return RedirectToAction("MyProfile", new { profileUpdated = 1 });
+                            return RedirectToAction("MyProfile", new { profileUpdated = 1, passwordUpdate = 0, bdokenAccountCreated = 0 });
                         }
 
                     }
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2 });
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0, bdokenAccountCreated = 0 });
                 }
                 catch
                 {
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2 });
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0, bdokenAccountCreated = 0 });
                 }
             }
             catch
@@ -295,7 +353,7 @@ namespace BDHub.Controllers
             }
         }
         [HttpPost]
-        public ActionResult EditVideo(int? id, FormCollection coll)
+        public ActionResult EditVideo(int? id, System.Web.Mvc.FormCollection coll)
         {
             try
             {
@@ -326,15 +384,11 @@ namespace BDHub.Controllers
             return RedirectToAction("MyVideos");
         }
 
-        public ActionResult ChangePassword(int nesto = 0)
+        public ActionResult ChangePassword(int passwordFail = 0)
         {
 
-            switch (nesto)
+            switch (passwordFail)
             {
-
-                case 1:
-                    ViewBag.Message = "Password changed successfully.";
-                    break;
                 case 2:
                     ViewBag.Message = "Password change failed.";
                     break;
@@ -342,6 +396,7 @@ namespace BDHub.Controllers
                     ViewBag.Message = "Incorrect old password";
                     break;
                 case 0:
+                case 1:
                 default:
                     ViewBag.Message = "";
                     break;
@@ -350,10 +405,8 @@ namespace BDHub.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ChangePassword(FormCollection collection, int nesto = 0)
+        public ActionResult ChangePassword(System.Web.Mvc.FormCollection collection, int passwordFail = 0)
         {
-
-
             try
             {
                 int id = (int)Session["userID"];
@@ -368,16 +421,16 @@ namespace BDHub.Controllers
                     {
                         result.password = newPass;
                         db.SaveChanges();
-                        return RedirectToAction("ChangePassword", new { nesto = 1 });
+                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 1, bdokenAccountCreated = 0 });
                     }
                     else
                     {
-                        return RedirectToAction("ChangePassword", new { nesto = 3 });
+                        return RedirectToAction("ChangePassword", new { passwordFail = 3 });
                     }
                 }
                 catch
                 {
-                    return RedirectToAction("ChangePassword", new { nesto = 2 });
+                    return RedirectToAction("ChangePassword", new { passwordFail = 2 });
                 }
 
             }
@@ -421,6 +474,128 @@ namespace BDHub.Controllers
                 ViewBag.Message = "E-mail not sent";
                 return View("ForgotPassword", userModel);
             }
+        }
+
+        public ActionResult CreateBDokenAcc(int bdokenAccountFailed = 0)
+        {
+            switch (bdokenAccountFailed)
+            {
+                case 2:
+                    ViewBag.Message = "Passwords to not match.";
+                    break;
+                case 3:
+                    ViewBag.Message = "BDoken account creation failed.";
+                    break;
+                case 0:
+                case 1:
+                default:
+                    ViewBag.Message = "";
+                    break;
+            }
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection collection, int bdokenAccountFailed = 0)
+        {
+            try
+            {
+                int id = (int)Session["userID"];
+                CertUser addingNewAddress = (from n in db.CertUsers
+                                             where n.certUserID == id
+                                             select n).SingleOrDefault();
+                string path = "";
+
+                try
+                {
+                    string password = collection[2];
+                    string retyped = collection[3];
+                    if (password == retyped)
+                    {
+                        path = GetDirPath();
+
+                        if (path == "")
+                            return RedirectToAction("MyProfile");
+
+                        addingNewAddress.beternumAddress = BDC.CreateNew(path, password);
+                        db.SaveChanges();
+                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 0, bdokenAccountCreated = 1 });
+                    }
+                    else
+                    {
+                        return RedirectToAction("CreateBDokenAcc", new { bdokenAccountFailed = 2 });
+                    }
+                }
+                catch
+                {
+                    return RedirectToAction("CreateBDokenAcc", new { bdokenAccountFailed = 3 });
+                }            
+            }
+            catch
+            {
+                return Redirect("~/Login/Index");
+            }
+        }
+
+        public string GetDirPath()
+        {
+            string selectedPath = "";
+            var t = new Thread(() =>
+            {
+
+                FolderBrowserDialog fbd = new FolderBrowserDialog
+                {
+                    ShowNewFolderButton = false,
+                    RootFolder = System.Environment.SpecialFolder.MyComputer
+                };
+
+
+
+                DialogResult result = fbd.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    // the code here will be executed if the user presses Open in
+                    // the dialog.
+                }
+                selectedPath = fbd.SelectedPath;
+
+
+            });
+
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+            t.Join();
+
+            return selectedPath;
+            
+        }
+
+        public string GetFilePath()
+        {
+            string filePath = "";
+            string[] arrAllFiles;
+            var t = new Thread(() =>
+            {
+                OpenFileDialog ofd = new OpenFileDialog
+                {
+                    Filter = "All Files (*.*)|*.*",
+                    FilterIndex = 1,
+                    Multiselect = false
+                };
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    filePath = ofd.FileName;
+                    arrAllFiles = ofd.FileNames; //used when Multiselect = true           
+                }
+
+            });
+
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+            t.Join();
+
+            return filePath;
+            
         }
     }
 }

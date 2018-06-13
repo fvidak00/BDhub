@@ -18,6 +18,7 @@ Set padding to keep content from hitting the edges
 
 img {
     width: 260px;
+   
 }
 /* Set width on the form input elements since they're 100% wide by default */
 /*input,

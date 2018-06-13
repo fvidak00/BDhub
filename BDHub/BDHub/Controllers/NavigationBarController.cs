@@ -17,20 +17,27 @@ namespace BDHub.Controllers
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
 
-        public ActionResult Index(string sortOrder)
+        public IQueryable<Video> VideoSort(string sortOrder, int stat)
         {
             ViewBag.DefaultSortParm = sortOrder == "videoid_desc" ? "VideoID" : "videoid_desc";
             ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
+            IQueryable<Video> videos;
 
-            //if (insufficientFunds == 0)
-            //    ViewBag.Message = "";
-            //else
-            //    ViewBag.Message = "Not enough gold, milord.";
 
-            var videos = from v in db.Videos
+            if (stat == 1)
+            {
+                videos = from v in db.Videos
                          select v;
+            }
+            else
+            {
+                int sid = (int)Session["userID"];
+                videos = from v in db.Videos
+                         where v.userID == sid
+                         select v;
+            }
 
             switch (sortOrder)
             {
@@ -61,7 +68,26 @@ namespace BDHub.Controllers
                 default:
                     videos = videos.OrderBy(s => s.videoID);
                     break;
+
+
             }
+            return videos;
+        }
+        
+
+        public ActionResult Index(string sortOrder, int insufficientFunds=0)
+        {
+
+
+            if (insufficientFunds == 0)
+                ViewBag.Message = "";
+            else
+                ViewBag.Message = "Not enough gold, milord.";
+
+          
+
+            IQueryable<Video> videos = VideoSort(sortOrder, 1);
+
             return View(videos.ToList());
 
             //return View(videos);
@@ -69,6 +95,8 @@ namespace BDHub.Controllers
 
         public async Task<ActionResult> IncrementViewCount(int? id)
         {
+            ViewBag.confirm=id;
+
             try
             {
                 int sid = (int)Session["userID"];
@@ -84,6 +112,8 @@ namespace BDHub.Controllers
                 var receiver = (from r in db.CertUsers
                                 where r.certUserID == result.userID
                                 select r).SingleOrDefault();
+
+                
 
                 BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
@@ -219,18 +249,15 @@ namespace BDHub.Controllers
 
             return RedirectToAction("MyProfile");
         }
-
-        public ActionResult MyVideos()
+        
+        public ActionResult MyVideos(string sortOrder)
         {
             try
             {
-                int sid = (int)Session["userID"];
-                var videos = from v in db.Videos
-                             where v.userID == sid
-                             select v;
+                IQueryable<Video> videos = VideoSort(sortOrder, 2);
 
 
-                return View(videos);
+                return View(videos.ToList());
             }
             catch
             {

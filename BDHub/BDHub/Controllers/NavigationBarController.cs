@@ -450,6 +450,34 @@ namespace BDHub.Controllers
                 ViewBag.Message = "E-mail not sent";
                 return View("ForgotPassword", userModel);
             }
+
         }   
+
+        public ActionResult DeleteUser()
+        {
+            try
+            {
+                int sid = (int)Session["userID"];
+
+                foreach (var userVideo in db.Videos.Where(x => x.userID == sid))
+                {
+                    db.Videos.Remove(userVideo);
+                }
+
+                //var dUser = (from u in db.CertUsers
+                //             where u.certUserID == sid
+                //             select u).FirstOrDefault();
+
+                //db.CertUsers.Remove(dUser);
+
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "NavigationBar");
+            }
+            catch
+            {
+                return RedirectToAction("Index", "NavigationBar");
+            }
+        }
     }
 }

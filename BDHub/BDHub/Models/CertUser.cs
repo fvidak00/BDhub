@@ -56,9 +56,9 @@ namespace BDHub.Models
 
         public bool bdokenAccountExist { get; set; } = false;
 
-        public BigInteger buyAmount {get;set;}=0;
+        public decimal buyAmount { get; set; } = 0;
 
-        public BigInteger sellAmount { get; set; } = 0;
+        public decimal sellAmount { get; set; } = 0;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

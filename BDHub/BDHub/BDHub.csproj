@@ -362,6 +362,7 @@
     <Content Include="Views\Registration\Registration.cshtml" />
     <Content Include="Views\Upload\Upload.cshtml" />
     <Content Include="Views\NavigationBar\CreateBDokenAcc.cshtml" />
+    <Content Include="Views\NavigationBar\BDokenAccSettings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

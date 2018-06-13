@@ -207,7 +207,8 @@ namespace BDHub.Controllers
                                          select n).SingleOrDefault();
 
             string filepath = GetFilePath();
-
+            if (filepath == "")
+                return RedirectToAction("BDokenAccSettings");
             //Password
             addingNewAddress.beternumAddress = BDC.LoadFromKeystore(filepath, "password");
             db.SaveChanges();
@@ -558,6 +559,16 @@ namespace BDHub.Controllers
             t.Join();
 
             return filePath;
+        }
+
+        public ActionResult BDokenAccSettings()
+        {
+
+
+
+
+            return View();
+
         }
     }
 }

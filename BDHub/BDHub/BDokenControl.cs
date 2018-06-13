@@ -38,7 +38,6 @@ namespace BDHub
             }
         }
 
-        //Prototype
         public string LoadFromKeystore(string filepath, string password)
         {
             using (var oldFile = File.OpenText(filepath))

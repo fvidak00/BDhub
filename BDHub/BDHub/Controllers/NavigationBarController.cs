@@ -89,8 +89,6 @@ namespace BDHub.Controllers
             IQueryable<Video> videos = VideoSort(sortOrder, 1);
 
             return View(videos.ToList());
-
-            //return View(videos);
         }
 
         public async Task<ActionResult> IncrementViewCount(int? id)

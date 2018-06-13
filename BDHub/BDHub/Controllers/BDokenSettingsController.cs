@@ -8,7 +8,6 @@ namespace BDHub.Controllers
 {
     public class BDokenSettingsController : Controller
     {
-        // GET: BDokenSettings
         public ActionResult Index()
         {
             return View();

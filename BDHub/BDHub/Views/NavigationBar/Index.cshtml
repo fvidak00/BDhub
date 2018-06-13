@@ -39,15 +39,16 @@
     }
     }
 
-@{int funkcija(int id) {
+@*@{int funkcija(int id) {
 
         
         Response.Write(id);
         return 0;
-    } }
+    } }*@
 
 <div class="row" id="navRow">
-    <div class="col-md-3">Sort by: <b>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DefaultSortParm })</b></div>
+    <div class="col-md-3">
+        Sort by: <b>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DefaultSortParm })</b></div>
     <div class="col-md-3">
         <div class="selected">
             <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
@@ -75,7 +76,7 @@
            style = "background: url("+Url.Content(getYouTubeThumbnail(item.filepath))+ ") no-repeat center ;display:block; height:146.25px; width:260px;",
            onclick = "return confirm('Are you sure you want to watch following video: \\n " +
                      "\\n Video title: " + @item.title +
-                     "\\n Price: " + @item.price + " BDoken" +
+                     "\\n Price: " + @item.price.ToString("0.#####################") + " BD" +
                      "\\n Uploaded by: " + @item.CertUser.username + "')"
        })
         </h2>
@@ -92,7 +93,7 @@
     </div>
       
     <div class="col-md-3">
-        <p><b>Price</b> > @item.price <b>BD</b></p>
+        <p><b>Price</b> > @item.price.ToString("0.#####################") <b>BD</b></p>
         <p><b>Owner</b> > @item.CertUser.username </p>
     </div>
 </div>

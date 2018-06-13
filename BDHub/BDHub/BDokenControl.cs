@@ -109,7 +109,6 @@ namespace BDHub
             await CallFunction(senderAddress, receiverAddress, value, transfer);
         }
 
-        //wtf
         public async Task MintToken(string senderAddress, string password, string receiverAddress, BigInteger value)
         {
             Function mintToken = GetFunction(senderAddress, password, "MintToken");

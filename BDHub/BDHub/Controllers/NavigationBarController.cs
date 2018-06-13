@@ -19,7 +19,7 @@ namespace BDHub.Controllers
 
         public ActionResult Index(string sortOrder)
         {
-            ViewBag.DefaultSortParm = String.IsNullOrEmpty(sortOrder) ? "VideoID" : "videoid_desc";
+            ViewBag.DefaultSortParm = sortOrder == "videoid_desc" ? "VideoID" : "videoid_desc";
             ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";

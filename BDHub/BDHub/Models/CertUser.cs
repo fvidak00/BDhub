@@ -46,7 +46,7 @@ namespace BDHub.Models
         public string LoginErrorMessage { get; set; }
 
         [DisplayName("BD Balance")]
-        [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
+        [DisplayFormat(DataFormatString = "{0:0,00000000000000000000}")]
         public decimal balance { get; set; }
 
         public string bdokenPass{ get; set; }

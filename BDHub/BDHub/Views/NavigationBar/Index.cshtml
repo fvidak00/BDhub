@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "Bdots Home";
+
+
+
 }
 
 <script type="text/javascript">
@@ -9,11 +12,14 @@
     if (!(notEnoughGoldMessage===""))
         alert(notEnoughGoldMessage);
 
-
-    
+    function clickImage() {
+        var tekst =@ViewBag.confirm+"nesto";
+        
+            return alert(tekst);
+        }
 </script>
-<script src="~/Scripts/RegistrationScript.js"></script>
-<script src="~/Scripts/angular.min.js"></script>
+
+
 @{ string getYouTubeThumbnail(string YoutubeUrl)
     {
         string youTubeThumb = string.Empty;
@@ -40,20 +46,17 @@
         }
 
         return "http://img.youtube.com/vi/" + youTubeThumb + "/mqdefault.jpg";
+    }
+    }
+
+@{int funkcija(int id) {
+
+        
+        Response.Write(id);
+        return 0;
     } }
 
-@*<tr>
-    <th>
-        @Html.ActionLink("title", "Index", new { sortOrder = ViewBag.NameSortParm })
-    </th>
-    <th>
-        About
-    </th>
-    <th>
-        @Html.ActionLink("Price", "Index", new { sortOrder = ViewBag.DateSortParm })
-    </th>
-    <th></th>
-</tr>*@
+
 <div class="row">
     <div class="col-md-3"></div>
     <div class="col-md-3">
@@ -75,57 +78,30 @@
 {
 
 <div class="row">
-  <script>
-      function clickImage() {
-            
-                            return ('Are you sure you want to watch following video: \n\n Video title:  @item.title  \n\n Price:   @item.price  BDoken \n\n Uploaded by:  @item.CertUser.username');
-                        }
-  </script>
   
-
-    <div class="col-md-3">
+  
+    
+    <div class="col-md-3" >
         <h2>
 
-            @*@Html.ActionLink(" ", "IncrementViewCount", "NavigationBar", new
-                {
-                    style = "background: url(@Url.Content(getYouTubeThumbnail(item.filepath)) no-repeat center right;display:block; height:24px; width:24px;"
-                })
-            *@
+
+           
+
+            @Html.ActionLink(" ","IncrementViewCount", new { id = item.videoID }, new {
+           style = "background: url("+Url.Content(getYouTubeThumbnail(item.filepath))+ ") no-repeat center ;display:block; height:146.25px; width:260px;",
 
 
-            <a href="@Url.Action("IncrementViewCount", "NavigationBar",new { id = item.videoID })" onclick="return confirm(clickImage())">
-
-                <img alt="@item.title" src="@Url.Content(getYouTubeThumbnail(item.filepath))"  />
-
-
-                @*\\n Video title:   @item.title
-                     \\n Price:   @item.price  BDoken
-                     \\n Uploaded by:   @item.CertUser.username '  )
-
-
-                        <img alt="@item.title" src="@Url.Content(getYouTubeThumbnail(item.filepath))" />
-                        @*<a>
-                    <img src="@Url.Content(getYouTubeThumbnail(item.filepath))" />
-                    @Html.ActionLink(" ", "IncrementViewCount", new { id = item.videoID },
-                         new
-                         {
-                             onclick = "return confirm('Are you sure you want to watch following video: \\n " +
-                         "\\n Video title: " + @item.title +
-                         "\\n Price: " + @item.price + " BDoken" +
-                         "\\n Uploaded by: " + @item.CertUser.username + "')"
-                         })*@
-
-            </a>
+           onclick = "return confirm('Are you sure you want to watch following video: \\n " +
+                     "\\n Video title: " + @item.title +
+                     "\\n Price: " + @item.price + " BDoken" +
+                     "\\n Uploaded by: " + @item.CertUser.username + "')"
+       })
 
         </h2>
     </div>
 
 
-    @*@Html.ActionLink(" ", "Index", "Countries", new
-        {
-            style = "background: url('../../Content/Images/table.png') no-repeat center right;display:block; height:24px; width:24px;"
-        })*@
-
+  
     <div class="col-md-3">
         <p><b>@item.title </b></p>
         <br />
@@ -133,10 +109,6 @@
     </div>
 
 
-
-    @*<div class="col-md-3">
-            <p><img src="@getYouTubeThumbnail(item.filepath)" alt="Thumbnail" /></p>
-        </div>*@
 
     <div class="col-md-3">
 

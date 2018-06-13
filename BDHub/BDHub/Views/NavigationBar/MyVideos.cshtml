@@ -33,23 +33,22 @@
     } }
 
 <div class="row">
+    <div class="col-md-3"></div>
     <div class="col-md-3">
-        <b>VIDEO TITLE</b>
+        <b>@Html.ActionLink("Title", "MyVideos", new { sortOrder = ViewBag.TitleSortParm })</b>
     </div>
 
-    <div class="col-md-3">
 
-        <b>DESCRIPTION</b>
-    </div>
 
     <div class="col-md-3">
 
-        <p><b>VIEWS</b></p>
+        <b>@Html.ActionLink("Views", "MyVideos", new { sortOrder = ViewBag.ViewsSortParm })</b>
     </div>
     <div class="col-md-3">
-        <p><b>PRICE</b></p>
+        <p><b>@Html.ActionLink("Price", "MyVideos", new { sortOrder = ViewBag.PriceSortParm })</b></p>
     </div>
 </div>
+
 
 @foreach (var item in Model)
 {
@@ -78,6 +77,7 @@
 
     <div class="col-md-3">
         <br />
+        <p>@item.title</p>
         <p>@item.about</p>
     </div>
 

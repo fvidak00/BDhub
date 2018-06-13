@@ -208,6 +208,11 @@ namespace BDHub.Controllers
 
             string filepath = GetFilePath();
 
+            if(filepath == "")
+            {
+                return RedirectToAction("MyProfile");
+            }
+
             //Password
             addingNewAddress.beternumAddress = BDC.LoadFromKeystore(filepath, "password");
             db.SaveChanges();
@@ -480,6 +485,10 @@ namespace BDHub.Controllers
                     if (password == retyped)
                     {
                         path = GetDirPath();
+
+                        if (path == "")
+                            return RedirectToAction("MyProfile");
+
                         addingNewAddress.beternumAddress = BDC.CreateNew(path, password);
                         db.SaveChanges();
                         return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 0, bdokenAccountCreated = 1 });
@@ -530,6 +539,7 @@ namespace BDHub.Controllers
             t.Join();
 
             return selectedPath;
+            
         }
 
         public string GetFilePath()
@@ -558,6 +568,7 @@ namespace BDHub.Controllers
             t.Join();
 
             return filePath;
+            
         }
     }
 }

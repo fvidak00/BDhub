@@ -5,8 +5,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using BDHub.Models;
-using System.Windows.Forms;
-using System.Threading;
 
 
 namespace BDHub.Controllers
@@ -24,7 +22,6 @@ namespace BDHub.Controllers
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
             IQueryable<Video> videos;
-
 
             if (stat == 1)
             {
@@ -68,23 +65,16 @@ namespace BDHub.Controllers
                 default:
                     videos = videos.OrderBy(s => s.videoID);
                     break;
-
-
             }
             return videos;
         }
         
-
-        public ActionResult Index(string sortOrder, int insufficientFunds=0)
+        public ActionResult Index(string sortOrder = "", int insufficientFunds=0)
         {
-
-
             if (insufficientFunds == 0)
                 ViewBag.Message = "";
             else
                 ViewBag.Message = "Not enough gold, milord.";
-
-          
 
             IQueryable<Video> videos = VideoSort(sortOrder, 1);
 
@@ -93,8 +83,6 @@ namespace BDHub.Controllers
 
         public async Task<ActionResult> IncrementViewCount(int? id)
         {
-            ViewBag.confirm=id;
-
             try
             {
                 int sid = (int)Session["userID"];
@@ -118,7 +106,7 @@ namespace BDHub.Controllers
                 //napravit unos passworda za BDoken
                 if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "password", BDWei)) && result.userID != sid)
                 {
-                    return RedirectToAction("Index", new { insufficientFunds = 1 });
+                    return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 1 });
                 }
                 else
                 {
@@ -164,7 +152,7 @@ namespace BDHub.Controllers
 
         }
 
-        public async Task<ActionResult> MyProfile(int profileUpdated = 0, int passwordUpdate = 0, int bdokenAccountCreated = 0)
+        public ActionResult MyProfile(int profileUpdated = 0, int passwordUpdate = 0)
         {
             try
             {
@@ -194,28 +182,7 @@ namespace BDHub.Controllers
                         break;
                     default:
                         break;
-                }
-
-                switch (bdokenAccountCreated)
-                {
-
-                    case 1:
-                        ViewBag.Message = "BDoken account created successfully";
-                        break;
-                    default:
-                        break;
                 }  
-
-                //Add password input
-                try
-                {
-                    BigInteger userBalance = await BDC.CheckBalance(result.beternumAddress, "password");
-                    result.balance = (decimal)userBalance / 1000000000000000000;
-                }
-                catch
-                {
-                    result.balance = 0;
-                }
 
                 return View(result);
             }
@@ -231,8 +198,6 @@ namespace BDHub.Controllers
             try
             {
                 IQueryable<Video> videos = VideoSort(sortOrder, 2);
-
-
                 return View(videos.ToList());
             }
             catch
@@ -280,7 +245,6 @@ namespace BDHub.Controllers
             {
                 return Redirect("~/Login/Index");
             }
-
         }
         [HttpPost]
         public ActionResult Edit(System.Web.Mvc.FormCollection collection)
@@ -298,15 +262,15 @@ namespace BDHub.Controllers
                            result.email != null)
                         {
                             db.SaveChanges();
-                            return RedirectToAction("MyProfile", new { profileUpdated = 1, passwordUpdate = 0, bdokenAccountCreated = 0 });
+                            return RedirectToAction("MyProfile", new { profileUpdated = 1, passwordUpdate = 0 });
                         }
 
                     }
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0, bdokenAccountCreated = 0 });
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0});
                 }
                 catch
                 {
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0, bdokenAccountCreated = 0 });
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0});
                 }
             }
             catch
@@ -397,7 +361,7 @@ namespace BDHub.Controllers
                     {
                         result.password = newPass;
                         db.SaveChanges();
-                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 1, bdokenAccountCreated = 0 });
+                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 1 });
                     }
                     else
                     {
@@ -464,19 +428,21 @@ namespace BDHub.Controllers
                     db.Videos.Remove(userVideo);
                 }
 
-                //var dUser = (from u in db.CertUsers
-                //             where u.certUserID == sid
-                //             select u).FirstOrDefault();
+                var dUser = (from u in db.CertUsers
+                             where u.certUserID == sid
+                             select u).FirstOrDefault();
 
-                //db.CertUsers.Remove(dUser);
+                db.CertUsers.Remove(dUser);
+
 
                 db.SaveChanges();
+                Session.Abandon();
 
-                return RedirectToAction("Index", "NavigationBar");
+                return Redirect("~/Login/Index");
             }
             catch
             {
-                return RedirectToAction("Index", "NavigationBar");
+                return Redirect("~/Login/Index");
             }
         }
     }

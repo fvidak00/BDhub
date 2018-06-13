@@ -13,8 +13,25 @@ namespace BDHub.Controllers
     {
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
-        public ActionResult Index()
+
+        public ActionResult Index(int mssg = 0)
         {
+            switch (mssg)
+            {
+                case 1:
+                    ViewBag.Message = "Account loaded successfully.";
+                    break;
+                case 2:
+                    ViewBag.Message = "Error occured during account save.";
+                        break;
+                case 3:
+                    ViewBag.Message = "Account created successfully.";
+                    break;
+                case 0:
+                default:
+                    ViewBag.Message = "";
+                    break;
+            }
             return View();
         }
 
@@ -30,14 +47,20 @@ namespace BDHub.Controllers
 
             if (filepath == "")
             {
-                return RedirectToAction("MyProfile");
+                return RedirectToAction("Index");
             }
 
-            //Password
-            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(filepath, "password");
-            db.SaveChanges();
+            addingNewAddress.beternumAddress = BDC.LoadFromKeystore(filepath);
+            try
+            {
+                 db.SaveChanges();
+            }
+            catch
+            {
+                return RedirectToAction("Index", new { mssg = 2});
+            }
 
-            return RedirectToAction("MyProfile");
+            return RedirectToAction("Index", new { mssg = 1 });
         }
 
         public ActionResult CreateBDokenAcc(int bdokenAccountFailed = 0)
@@ -78,11 +101,18 @@ namespace BDHub.Controllers
                         path = GetDirPath();
 
                         if (path == "")
-                            return RedirectToAction("MyProfile");
+                            return RedirectToAction("Index");
 
                         addingNewAddress.beternumAddress = BDC.CreateNew(path, password);
-                        db.SaveChanges();
-                        return RedirectToAction("MyProfile", new { profileUpdated = 0, passwordUpdate = 0, bdokenAccountCreated = 1 });
+                        try
+                        { 
+                            db.SaveChanges();
+                        }
+                        catch
+                        {
+                            return RedirectToAction("Index", new { mssg = 2 });
+                        }
+                        return RedirectToAction("Index", new { mssg = 3 });
                     }
                     else
                     {

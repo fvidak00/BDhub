@@ -50,7 +50,6 @@ myApp.controller('registrationCtrl', function ($scope, $http, $window) {
 
 myApp.controller('uploadController', function ($scope, $http, $window) {
 
-	debugger;
 	$scope.video = {};
 
 
@@ -67,46 +66,46 @@ myApp.controller('uploadController', function ($scope, $http, $window) {
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 
-	window.onYouTubeIframeAPIReady = function () {
-		$scope.player = new YT.Player('player', {
+    window.onYouTubeIframeAPIReady = function () {
+        $scope.player = new YT.Player('player', {
 
-			videoId: youtube_parser(videoTitle),
-			events: {
-				'onReady': onPlayerReady,
-				'onStateChange': onPlayerStateChange
-			},
-			playerVars: {
-				'controls': 0,
-				'showinfo': 0
-			}
-
-
-		});
+            videoId: youtube_parser(videoTitle),
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            },
+            playerVars: {
+                'controls': 0,
+                'showinfo': 0
+            }
 
 
-		function onPlayerReady(event) {
-
-			$scope.player.playVideo();
+        });
 
 
-		}
+        function onPlayerReady(event) {
 
-		function youtube_parser(url) {
-			var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/i;
-			var match = url.match(regExp);
-			return (match && match[7].length == 11) ? match[7] : false;
-		}
+            $scope.player.playVideo();
 
-		var firstLoad = true;
 
-		//	// The API calls this function when the player's state changes.
-		function onPlayerStateChange(event) {
-			if (firstLoad == true && event.data === -1) {
-				console.log(firstLoad);
-				firstLoad = false;
-			}
-		}
-	}
+        }
+
+        function youtube_parser(url) {
+            var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/i;
+            var match = url.match(regExp);
+            return (match && match[7].length === 11) ? match[7] : false;
+        }
+
+        var firstLoad = true;
+
+        //	// The API calls this function when the player's state changes.
+        function onPlayerStateChange(event) {
+            if (firstLoad === true && event.data === -1) {
+                console.log(firstLoad);
+                firstLoad = false;
+            }
+        }
+    };
 
 	//	$scope.set2 = function ($ayd) {
 	//		var thumb = getParameterByName(this.input.ayd, 'v'),
@@ -132,7 +131,7 @@ myApp.controller('uploadController', function ($scope, $http, $window) {
 		function youtube_parser(url) {
 			var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/i;
 			var match = url.match(regExp);
-			return (match && match[7].length == 11) ? match[7] : false;
+			return (match && match[7].length === 11) ? match[7] : false;
 		}
 	};
 
@@ -142,15 +141,15 @@ myApp.controller('uploadController', function ($scope, $http, $window) {
 		$http.post("/Upload/SaveVideo", { newVideo: video })
 			.then(function succesCallback(response) {
 				status = response.data;
-				if (status == 0) {
+				if (status === 0) {
 					alert("Upload successfull");
 					$window.location.href = '/NavigationBar/MyVideos';
 					$scope.video = "";
 				}
-				else if (status == 1) {
+				else if (status === 1) {
 					alert("You already upload video with that URL");
 				}
-				else if (status == 2) {
+				else if (status === 2) {
 					alert("There is already video with the same URL in system");
 				}
 

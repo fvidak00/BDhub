@@ -6,6 +6,7 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.Contracts;
 using Nethereum.KeyStore;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace BDHub
 {
@@ -38,16 +39,18 @@ namespace BDHub
             }
         }
 
-        public string LoadFromKeystore(string filepath, string password)
+        public string LoadFromKeystore(string filepath)
         {
             using (var oldFile = File.OpenText(filepath))
             {
                 string json = oldFile.ReadToEnd();
-                string addressStart = @"""address"":""";
-                string addressEnd = @""",""version""";
-                int indexOfStart = json.IndexOf(addressStart) + addressStart.Length;
-                int indexOfEnd = json.IndexOf(addressEnd);
-                return json.Substring(indexOfStart, indexOfEnd-indexOfStart);
+                string address = "";
+                dynamic keystore = JsonConvert.DeserializeObject(json);
+                var temp = keystore.address;
+                address = temp.ToString();
+                if (address.Length < 42)
+                    address = "0x" + address;
+                return address;
             }
         }
 

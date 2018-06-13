@@ -5,7 +5,11 @@
 
 <h2>BDoken Settings</h2>
 
-
+<script type="text/javascript">
+    var messageReceived = "@ViewBag.Message";
+    if (!(messageReceived === ""))
+        alert(messageReceived);
+</script>
 
 
 @Html.AntiForgeryToken()
@@ -19,17 +23,16 @@
         <div class="col-md-13">
             @Html.ActionLink("Create BDoken/ERC20 account", "CreateBDokenAcc", "BDokenSettings", new { @class = "btn btn-default" })
             <br /><br />
-            @Html.ActionLink("Create BDoken/ERC20 account from existing keystore", "LoadBDokenAccount", "BDokenSettings", new { @class = "btn btn-default" })
+            @Html.ActionLink("Load BDoken/ERC20 account from existing keystore", "LoadBDokenAccount", "BDokenSettings", new { @class = "btn btn-default" })
             <br /><br />
             @Html.ActionLink("Get BDoken Data", "GetBDokenData", "BDokenSettings", new { @class = "btn btn-default" })
         </div>
     </div>
 
     <div class="form-group">
-        @Html.Label("BDoken/ERC20 passphrase", htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.Label("BDoken/ERC20 passphrase:", htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @Html.EditorFor(model => model.bdokenPass, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.bdokenPass, "", new { @class = "text-danger" })
         </div>
     </div>
 

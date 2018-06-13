@@ -48,16 +48,15 @@ namespace BDHub.Models
         [DisplayName("BD Balance")]
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal balance { get; set; }
-
-        [Required(ErrorMessage = "This field is required")]
+        
         public string bdokenPass { get; set; }
 
         public string infoMessage { get; set; } = "";
 
-        public bool bdokenAccountExist { get; set; } = false;
-
+        [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal buyAmount { get; set; } = 0;
 
+        [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal sellAmount { get; set; } = 0;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

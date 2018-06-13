@@ -45,14 +45,14 @@
             </div>
         </div>
 
-        <div class="form-group">
+        @*<div class="form-group">
             @Html.LabelFor(model => model.balance, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-13">
                 @Html.DisplayFor(model => model.balance)
                 @Html.Label("BD")
                 @Html.ValidationMessageFor(model => model.balance, "", new { @class = "text-danger" })
             </div>
-        </div>
+        </div>*@
 
         <div class="form-group">
             @Html.LabelFor(model => model.email, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -70,10 +70,6 @@
                 <br /><br />
 
                 @Html.ActionLink("Change Password", "ChangePassword", "NavigationBar", new { @class = "btn btn-default" })
-                <br /><br />
-                @Html.ActionLink("Create BDoken Account", "CreateBDokenAcc", "NavigationBar", new { @class = "btn btn-default" })
-                <br /><br />
-                @Html.ActionLink("Create BDoken account from existing keystore", "LoadBDokenAccount", "NavigationBar", new { @class = "btn btn-default" })
                 <br /><br />
                 @Html.ActionLink("Delete User", "DeleteUser", "NavigationBar", new { @class = "btn btn-default" })
             </div>

@@ -83,11 +83,7 @@
     <div class="col-md-3">
         <h2>
 
-            @*@Html.ActionLink(" ", "IncrementViewCount", "NavigationBar", new
-                {
-                    style = "background: url(@Url.Content(getYouTubeThumbnail(item.filepath)) no-repeat center right;display:block; height:24px; width:24px;"
-                })
-            *@
+           
 
 
             <a href="@Url.Action("IncrementViewCount", "NavigationBar",new { id = item.videoID })" onclick="return confirm('Are you sure you want to watch following video: \n\n Video title:  @item.title  \n\n Price:   @item.price  BD \n\n Uploaded by:  @item.CertUser.username')">
@@ -95,34 +91,14 @@
                 <img alt="@item.title" src="@Url.Content(getYouTubeThumbnail(item.filepath))"  />
 
 
-                @*\\n Video title:   @item.title
-                     \\n Price:   @item.price  BDoken
-                     \\n Uploaded by:   @item.CertUser.username '  )
-
-
-                        <img alt="@item.title" src="@Url.Content(getYouTubeThumbnail(item.filepath))" />
-                        @*<a>
-                    <img src="@Url.Content(getYouTubeThumbnail(item.filepath))" />
-                    @Html.ActionLink(" ", "IncrementViewCount", new { id = item.videoID },
-                         new
-                         {
-                             onclick = "return confirm('Are you sure you want to watch following video: \\n " +
-                         "\\n Video title: " + @item.title +
-                         "\\n Price: " + @item.price + " BDoken" +
-                         "\\n Uploaded by: " + @item.CertUser.username + "')"
-                         })*@
-
+               
             </a>
 
         </h2>
     </div>
 
 
-    @*@Html.ActionLink(" ", "Index", "Countries", new
-        {
-            style = "background: url('../../Content/Images/table.png') no-repeat center right;display:block; height:24px; width:24px;"
-        })*@
-
+    
     <div class="col-md-3">
         <p><b>@item.title </b></p>
         <br />
@@ -131,9 +107,7 @@
 
 
 
-    @*<div class="col-md-3">
-            <p><img src="@getYouTubeThumbnail(item.filepath)" alt="Thumbnail" /></p>
-        </div>*@
+   
 
     <div class="col-md-3">
 

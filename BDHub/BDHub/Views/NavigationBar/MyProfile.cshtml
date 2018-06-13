@@ -5,7 +5,7 @@
 }
 
 <script type="text/javascript">
-    var messageReceived = "@Model.infoMessage";
+    var messageReceived = "@ViewBag.Message";
     if (!(messageReceived === ""))
         alert(messageReceived);
 </script>

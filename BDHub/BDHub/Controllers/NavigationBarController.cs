@@ -148,28 +148,23 @@ namespace BDHub.Controllers
                 switch (profileUpdated)
                 {
                     case 1:
-                        result.infoMessage = "Profile updated successfully.";
+                        ViewBag.Message = "Profile updated successfully.";
                         break;
                     case 2:
-                        result.infoMessage = "Profile update failed. Please fill all fields";
+                        ViewBag.Message = "Profile update failed. Please fill all fields";
                         break;
                     case 0:
                     default:
-                        result.infoMessage = "";
+                        ViewBag.Message = "";
                         break;
                 }
-
+                
                 switch (passwordUpdate)
                 {
-
                     case 1:
-                        result.infoMessage = "Password changed successfully.";
+                        ViewBag.Message = "Password changed successfully.";
                         break;
-                    case 2:
-                    case 3:
-                    case 0:
                     default:
-                        result.infoMessage = "";
                         break;
                 }
 
@@ -177,13 +172,9 @@ namespace BDHub.Controllers
                 {
 
                     case 1:
-                        result.infoMessage = "BDoken account created successfully";
+                        ViewBag.Message = "BDoken account created successfully";
                         break;
-                    case 2:
-                    case 3:
-                    case 0:
                     default:
-                        result.infoMessage = "";
                         break;
                 }
 
@@ -299,15 +290,15 @@ namespace BDHub.Controllers
                            result.email != null)
                         {
                             db.SaveChanges();
-                            return RedirectToAction("MyProfile", new { profileUpdated = 1 });
+                            return RedirectToAction("MyProfile", new { profileUpdated = 1, passwordUpdate = 0, bdokenAccountCreated = 0 });
                         }
 
                     }
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2 });
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0, bdokenAccountCreated = 0 });
                 }
                 catch
                 {
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2 });
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0, bdokenAccountCreated = 0 });
                 }
             }
             catch

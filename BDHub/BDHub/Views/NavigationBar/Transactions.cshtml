@@ -6,40 +6,46 @@
 <h2>My transactions</h2>
 
 <div class="row">
-    <div class="col-md-3">
-        <p><b>DATE</b></p>
+    <div class="col-md-2">
+        <p><b>VIDEO TITLE</b></p>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <p><b>PAYER</b></p>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <p><b>RECEIVER</b></p>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <p><b>PAYMENT</b></p>
+    </div>
+    <div class="col-md-2">
+        <p><b>DATE</b></p>
     </div>
 </div>
 
 @foreach (var item in Model)
 {
-    <div class="row">
-        <div class="col-md-3">
-            @item.paymentDatetime
-       </div>
-
-        <div class="col-md-3">
-            @item.payerUsername
-        </div>
-
-        <div class="col-md-3">
-            @item.receiverUsername
-        </div>
-
-        <div class="col-md-3">
-            @item.paymentSum <b>BD</b>
-        </div>
+<div class="row">
+    <div class="col-md-2">
+        @item.videoTitle
     </div>
+
+    <div class="col-md-2">
+        @item.payerUsername
+    </div>
+
+    <div class="col-md-2">
+        @item.receiverUsername
+    </div>
+
+    <div class="col-md-2">
+        @item.paymentSum <b>BD</b>
+    </div>
+    <div class="col-md-2">
+        @item.paymentDatetime.Value.ToString("d.M.yyyy. H:mm")
+    </div>
+</div>
 }

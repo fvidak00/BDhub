@@ -68,17 +68,39 @@ namespace BDHub.Controllers
             }
             return videos;
         }
-        
-        public ActionResult Index(string sortOrder = "", int insufficientFunds=0)
+
+        public ActionResult Index(string sortOrder = "", int insufficientFunds = 0)
         {
-            if (insufficientFunds == 0)
-                ViewBag.Message = "";
-            else
-                ViewBag.Message = "Not enough gold, milord.";
+            try
+            {
+                int sid = (int)Session["userID"];
+                CertUser noBDokenAccount = (from u in db.CertUsers
+                                            where u.certUserID == sid
+                                            select u).SingleOrDefault();
 
-            IQueryable<Video> videos = VideoSort(sortOrder, 1);
+                if (noBDokenAccount.beternumAddress.Equals(""))
+                    return RedirectToAction("Index", "BDokenSettings");
 
-            return View(videos.ToList());
+                switch (insufficientFunds)
+                {
+                    case 1:
+                        ViewBag.Message = "Not enough gold, milord.";
+                        break;
+                    case 0:
+                    default:
+                        ViewBag.Message = "";
+                        break;
+                }
+                    ViewBag.Message = "";
+                
+                IQueryable<Video> videos = VideoSort(sortOrder, 1);
+
+                return View(videos.ToList());
+            }
+            catch
+            {
+                return Redirect("~/Login/Index");
+            }
         }
 
         public async Task<ActionResult> IncrementViewCount(int? id)
@@ -99,7 +121,7 @@ namespace BDHub.Controllers
                                 where r.certUserID == result.userID
                                 select r).SingleOrDefault();
 
-                
+
 
                 BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
@@ -174,7 +196,7 @@ namespace BDHub.Controllers
                         ViewBag.Message = "";
                         break;
                 }
-                
+
                 switch (passwordUpdate)
                 {
                     case 1:
@@ -182,7 +204,7 @@ namespace BDHub.Controllers
                         break;
                     default:
                         break;
-                }  
+                }
 
                 return View(result);
             }
@@ -192,7 +214,7 @@ namespace BDHub.Controllers
             }
 
         }
-        
+
         public ActionResult MyVideos(string sortOrder)
         {
             try
@@ -247,7 +269,7 @@ namespace BDHub.Controllers
             }
         }
         [HttpPost]
-        public ActionResult Edit(System.Web.Mvc.FormCollection collection)
+        public ActionResult Edit(FormCollection collection)
         {
             try
             {
@@ -266,11 +288,11 @@ namespace BDHub.Controllers
                         }
 
                     }
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0});
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0 });
                 }
                 catch
                 {
-                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0});
+                    return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0 });
                 }
             }
             catch
@@ -293,7 +315,7 @@ namespace BDHub.Controllers
             }
         }
         [HttpPost]
-        public ActionResult EditVideo(int? id, System.Web.Mvc.FormCollection coll)
+        public ActionResult EditVideo(int? id, FormCollection coll)
         {
             try
             {
@@ -345,7 +367,7 @@ namespace BDHub.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ChangePassword(System.Web.Mvc.FormCollection collection, int passwordFail = 0)
+        public ActionResult ChangePassword(FormCollection collection, int passwordFail = 0)
         {
             try
             {
@@ -415,7 +437,7 @@ namespace BDHub.Controllers
                 return View("ForgotPassword", userModel);
             }
 
-        }   
+        }
 
         public ActionResult DeleteUser()
         {

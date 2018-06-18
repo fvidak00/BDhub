@@ -358,12 +358,12 @@
     <Content Include="Views\NavigationBar\MyProfile.cshtml" />
     <Content Include="Views\NavigationBar\MyVideos.cshtml" />
     <Content Include="Views\NavigationBar\Transactions.cshtml" />
-    <Content Include="Views\NavigationBar\Upload.cshtml" />
     <Content Include="Views\NavigationBar\VideoPlayer.cshtml" />
     <Content Include="Views\Registration\Registration.cshtml" />
     <Content Include="Views\Upload\Upload.cshtml" />
     <Content Include="Views\BDokenSettings\Index.cshtml" />
     <Content Include="Views\BDokenSettings\CreateBDokenAcc.cshtml" />
+    <Content Include="Views\BDokenSettings\BDokenDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

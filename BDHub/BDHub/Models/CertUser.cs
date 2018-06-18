@@ -47,9 +47,22 @@ namespace BDHub.Models
 
         [DisplayName("BD Balance")]
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
-        public decimal balance { get; set; }
+        public decimal balance { get; set; } = -1;
+
+        public string formattedBalance
+        {
+            get
+            {
+                if(this.balance == -1)
+                {
+                    return "BDoken account not found.";
+                }
+                else
+                    return this.balance.ToString("0.#####################")+" BD";
+            }
+        }
         
-        public string bdokenPass { get; set; }
+        public string bdokenPass { get; set; } = "";
 
         public string infoMessage { get; set; } = "";
 

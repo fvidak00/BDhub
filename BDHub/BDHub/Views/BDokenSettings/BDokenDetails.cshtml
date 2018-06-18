@@ -1,0 +1,34 @@
+﻿@model BDHub.Models.BDokenDetail
+
+@{
+    ViewBag.Title = "BDoken Details";
+}
+
+<h2>BDoken Details</h2>
+
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.LabelFor(model => model.BDID, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-13">
+            @Html.DisplayFor(model => model.BDID)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.BDname, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-13">
+            @Html.DisplayFor(model => model.BDname)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.BDsymbol, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-13">
+            @Html.DisplayFor(model => model.BDsymbol)
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.BDdecimals, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-13">
+            @Html.DisplayFor(model => model.BDdecimals)
+        </div>
+    </div>
+</div>

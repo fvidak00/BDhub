@@ -11,12 +11,17 @@ namespace BDHub.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class BDokenDetail
     {
+        [DisplayName("Token address")]
         public string BDID { get; set; }
+        [DisplayName("Token Name")]
         public string BDname { get; set; }
+        [DisplayName("Token symbol")]
         public string BDsymbol { get; set; }
+        [DisplayName("Number of decimals")]
         public int BDdecimals { get; set; }
     }
 }

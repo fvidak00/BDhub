@@ -26,7 +26,7 @@ myApp.controller('registrationCtrl', function ($scope, $http, $window) {
 				status = response.data;
 				if (status === 0) {
 					alert("Registration successfull");
-					$window.location.href = '/NavigationBar/Index';
+                    $window.location.href = '/NavigationBar/Index';
 				}
 				else if (status === 1) {
 					alert("Username is already in use");

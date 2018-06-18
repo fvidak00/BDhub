@@ -4,12 +4,9 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Net.Mail;
 using BDHub.Models;
-using System.Threading.Tasks;
 
 namespace BDHub.Controllers
 {
-
-
     public class RegistrationController : Controller
     {
         public ActionResult Registration()
@@ -19,7 +16,6 @@ namespace BDHub.Controllers
         }
 
         BDEntities connection = new BDEntities();
-        BDokenControl BDC = new BDokenControl();
 
         [HttpPost]
         public JsonResult SaveUser(CertUser newCertUser)

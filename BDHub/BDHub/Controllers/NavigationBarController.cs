@@ -126,7 +126,7 @@ namespace BDHub.Controllers
                 BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
                 //napravit unos passworda za BDoken
-                if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "password", BDWei)) && result.userID != sid)
+                if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "", BDWei)) && result.userID != sid)
                 {
                     return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 1 });
                 }

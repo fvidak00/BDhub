@@ -53,9 +53,13 @@ namespace BDHub.Models
         {
             get
             {
-                if(this.balance == -1)
+                if (this.beternumAddress.Equals(""))
                 {
                     return "BDoken account not found.";
+                }
+                else if (this.balance == -1)
+                {
+                    return "Please check BDoken balance to display current amount.";
                 }
                 else
                     return this.balance.ToString("0.#####################")+" BD";

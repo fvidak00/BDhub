@@ -40,28 +40,26 @@
         <div class="form-group">
             @Html.Label("BDoken/ERC20 passphrase", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.PasswordFor(model => model.bdokenPass, new { Name = "Passphrase", htmlAttributes = new { @class = "form-control" } })
+                <input class="form-control text-box single-line" name="Passphrase" id="bdokenPass" type="password">
             </div>
         </div>
 
         <div class="form-group">
-            @Html.Label("Buy BDoken ", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Buy BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
 
             <div class="col-md-10">
                 @Html.EditorFor(model => model.buyAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ActionLink("Buy", "BuyBDoken", "BDokenSettings", new { @class = "btn btn-default" })
-                @*<a class="btn btn-default" href="/BDokenSettings/BuyBDoken?Length=14" onclick="document.forms[0].submit()">Buy</a>*@
+                @Html.ActionLink("Buy  (1ETH = 1BD)", "BuyBDoken", "BDokenSettings", new { @class = "btn btn-default" })
 
+                @*<input type="submit" value="Check BDoken balance" class="btn btn-default" />*@
             </div>
         </div>
 
         <div class="form-group">
-            @Html.Label("Sell BDoken ", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Sell BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.sellAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ActionLink("Sell", "SellBDoken", "BDokenSettings", new { @class = "btn btn-default" })
-                @*<a class="btn btn-default" href="/BDokenSettings/SellBDoken?Length=14" onclick='document.getElementById("1").submit()'>Sell</a>*@
-
+                @Html.ActionLink("Sell (1BD = 0.1ETH)", "SellBDoken", "BDokenSettings", new { @class = "btn btn-default" })
             </div>
         </div>
 
@@ -71,7 +69,7 @@
 
 
             <div class="col-md-13">
-                <input type="submit" value="Check BDoken balance" class="btn btn-default" />
+                @Html.ActionLink("Check BDoken balance", "CheckBDokenBalance", "BDokenSettings", new { @class = "btn btn-default" })
                 @Html.DisplayFor(model => model.formattedBalance)
                 @Html.Label("", new { @class = "control" })
             </div>

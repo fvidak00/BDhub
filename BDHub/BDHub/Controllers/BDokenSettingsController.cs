@@ -47,6 +47,7 @@ namespace BDHub.Controllers
                 CertUser result = (from r in db.CertUsers
                                    where r.certUserID == sid
                                    select r).SingleOrDefault();
+                result.balance = userBalance;
                 return View(result);
             }
             catch
@@ -55,7 +56,7 @@ namespace BDHub.Controllers
             }
         }
 
-        public ActionResult LoadBDokenAccount()
+        public async Task<ActionResult> LoadBDokenAccount()
         {
             int id = (int)Session["userID"];
 
@@ -74,6 +75,7 @@ namespace BDHub.Controllers
             try
             {
                 db.SaveChanges();
+                await CheckBDokenBalance();
             }
             catch
             {
@@ -102,7 +104,7 @@ namespace BDHub.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult CreateBDokenAcc(System.Web.Mvc.FormCollection collection, int bdokenAccountFailed = 0)
+        public async Task<ActionResult> CreateBDokenAcc(System.Web.Mvc.FormCollection collection, int bdokenAccountFailed = 0)
         {
             try
             {
@@ -127,6 +129,7 @@ namespace BDHub.Controllers
                         try
                         {
                             db.SaveChanges();
+                            await CheckBDokenBalance();
                         }
                         catch
                         {
@@ -167,22 +170,7 @@ namespace BDHub.Controllers
             return View();
         }
 
-        public ActionResult CheckBDokenBalance()
-        {
-            try
-            {
-                int id = (int)Session["userID"];
-                var result = db.CertUsers.Single(m => m.certUserID == id);
-                result.balance = userBalance;
-                return View(result);
-            }
-            catch
-            {
-                return Redirect("~/Login/Index");
-            }
-        }
-        [HttpPost]
-        public async Task<ActionResult> CheckBDokenBalance(System.Web.Mvc.FormCollection collection)
+        public async Task<ActionResult> CheckBDokenBalance()
         {
             try
             {
@@ -190,12 +178,12 @@ namespace BDHub.Controllers
                 CertUser result = (from r in db.CertUsers
                                    where r.certUserID == sid
                                    select r).SingleOrDefault();
-                result.bdokenPass = collection[2];
-                if(result.bdokenPass == "")
-                    return RedirectToAction("Index", new { mssg = 4 });
+                //result.bdokenPass = collection[2];
+                //if(result.bdokenPass == "")
+                //    return RedirectToAction("Index", new { mssg = 4 });
                 try
                 {
-                    BigInteger BigBalance = await BDC.CheckBalance(result.beternumAddress, result.bdokenPass);
+                    BigInteger BigBalance = await BDC.CheckBalance(result.beternumAddress, "");
                     userBalance = (decimal)BigBalance / 1000000000000000000;
                     result.balance = userBalance;
                 }
@@ -211,53 +199,6 @@ namespace BDHub.Controllers
                 return Redirect("~/Login/Index");
             }
         }
-
-        //public ActionResult Edit()
-        //{
-        //    try
-        //    {
-        //        int id = (int)Session["userID"];
-        //        var result = db.CertUsers.Single(m => m.certUserID == id);
-        //        return View(result);
-        //    }
-        //    catch
-        //    {
-        //        return Redirect("~/Login/Index");
-        //    }
-        //}
-        //[HttpPost]
-        //public ActionResult Edit(FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        int id = (int)Session["userID"];
-        //        var result = db.CertUsers.Single(m => m.certUserID == id);
-        //        try
-        //        {
-        //            if (TryUpdateModel(result))
-        //            {
-        //                if (result.firstName != null &&
-        //                   result.lastName != null &&
-        //                   result.email != null)
-        //                {
-        //                    db.SaveChanges();
-        //                    return RedirectToAction("MyProfile", new { profileUpdated = 1, passwordUpdate = 0 });
-        //                }
-
-        //            }
-        //            return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0 });
-        //        }
-        //        catch
-        //        {
-        //            return RedirectToAction("MyProfile", new { profileUpdated = 2, passwordUpdate = 0 });
-        //        }
-        //    }
-        //    catch
-        //    {
-        //        return Redirect("~/Login/Index");
-        //    }
-
-        //}
 
         public string GetDirPath()
         {

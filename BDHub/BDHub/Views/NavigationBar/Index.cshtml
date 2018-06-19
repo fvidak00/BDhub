@@ -76,14 +76,6 @@
 
                 <button onclick='var attr=[@item.videoID, "@item.title", @item.price.ToString("0.#####################"), "@item.CertUser.username"]; PopUp(attr)'
                         style='background: url(@Url.Content(getYouTubeThumbnail(@item.filepath))) no-repeat center; display:block; height:146.25px; width:260px;'></button>
-                @*var vT=@item.title; var vP=@item.price.ToString("0.#####################"); var vU=@item.CertUser.username;*@
-                @*, vT, vP, vU*@
-
-
-                @*<a href="/NavigationBar/IncrementViewCount/@item.videoID"
-                   onclick="if(document.getElementsByName('Passphrase')[0].value!='') {return confirm('Are you sure you want to watch following video: \n \n Video title: @item.title\n Price: @item.price.ToString("0.#####################") BD\n Uploaded by: @item.CertUser.username');} else {alert('Passphrase is required.'); return false}"
-                   style='background: url(@Url.Content(getYouTubeThumbnail(@item.filepath))) no-repeat center; display:block; height:146.25px; width:260px;'>
-                </a>*@
             </h2>
         </div>
 
@@ -104,6 +96,20 @@
     </div>
 }
 
+<div id="popup">
+    <p id="DoYou"></p>
+    @*<form name="passphraseForm" method="post">*@
+    @using (Html.BeginForm("SendDataToIncrementViewCount", "NavigationBar", FormMethod.Post, new { name = "passphraseForm", id = "TheForm" }))
+    {
+        <input id="pass" name="passphrase" type="password" class="form-control" style="width:250px" />
+        <input type="text" name="hiddenVideoID" style="visibility:hidden" id="hvid"/>
+    }
+    @*</form>*@
+    <br />
+    <button class="btn btn-default" onclick="Accept()">OK</button>
+    <button class="btn btn-default" onclick="Cancel()">Cancel</button>
+</div>
+
 <script>
 
     var videosList = document.getElementsByClassName("row");
@@ -116,7 +122,8 @@
         videoTitle = attr[1];
         videoPrice = attr[2];
         videoUser = attr[3];
-        doYou.innerHTML = 'Are you sure you want to watch following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser+' <br/><br/> Enter passphrase:';
+        document.getElementById("hvid").value = videoID;
+        doYou.innerHTML = 'Are you sure you want to watch following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser + ' <br/><br/> Enter passphrase:';
         document.getElementById("popup").style.display = "block";
         ChangePointerEvents("none");
     }
@@ -124,11 +131,12 @@
     function Accept() {
         var passphrase = document.getElementById("pass").value;
         if (passphrase == "")
-            alert('Passphrase is required.' + videoID + videoTitle + videoPrice + videoUser);
+            alert('Passphrase is required.');
         else {
             document.getElementById("popup").style.display = "none";
-            var addr = "/NavigationBar/IncrementViewCount/" + videoID;
-            window.location.href = addr;
+            document.passphraseForm.submit();
+            //var addr = "/NavigationBar/IncrementViewCount/" + videoID;
+            //window.location.href = addr;
         }
         ChangePointerEvents("auto");
         return true;
@@ -147,10 +155,4 @@
     }
 </script>
 
-<div id="popup">
-    <p id="DoYou"></p>
-    <input id="pass" type="password" class="form-control" style="width:250px" />
-    <br />
-    <button class="btn btn-default" onclick="Accept()">OK</button>
-    <button class="btn btn-default" onclick="Cancel()">Cancel</button>
-</div>
+

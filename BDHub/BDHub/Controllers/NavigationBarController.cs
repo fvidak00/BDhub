@@ -103,7 +103,23 @@ namespace BDHub.Controllers
             }
         }
 
-        public async Task<ActionResult> IncrementViewCount(int? id)
+        [HttpPost]
+        public ActionResult SendDataToIncrementViewCount(FormCollection collection)
+        {
+            try
+            {
+                int sid = (int)Session["userID"];
+                int? id = Int32.Parse(collection["hiddenVideoID"]);
+                string passphrase = collection["passphrase"];
+                return RedirectToAction("IncrementViewCount", new { id, passphrase });
+            }
+            catch
+            {
+                return Redirect("~/Login/Index");
+            }
+        }
+
+        public async Task<ActionResult> IncrementViewCount(int? id, string passphrase)
         {
             try
             {
@@ -125,7 +141,6 @@ namespace BDHub.Controllers
 
                 BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
-                //napravit unos passworda za BDoken
                 if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "", BDWei)) && result.userID != sid)
                 {
                     return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 1 });
@@ -135,7 +150,7 @@ namespace BDHub.Controllers
                     result.viewsCount++;
                     if (result.userID != sid)
                     {
-                        await BDC.Transfer(payer.beternumAddress, "password", receiver.beternumAddress, BDWei);
+                        await BDC.Transfer(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
                         Payment payment = new Payment
                         {
                             videoTitle = result.title,

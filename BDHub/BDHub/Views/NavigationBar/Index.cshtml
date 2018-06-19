@@ -2,12 +2,19 @@
 
 @{
     ViewBag.Title = "BDhub Home";
+
 }
+
+<link href="~/ContentCSS/InputPasswordOnMainPage.css" rel="stylesheet" />
 
 <script type="text/javascript">
     var notEnoughGoldMessage = "@ViewBag.Message";
     if (!(notEnoughGoldMessage === ""))
         alert(notEnoughGoldMessage);
+    var videoID = 0;
+    var videoTitle = "";
+    var videoPrice = "";
+    var videoUser = "";
 </script>
 
 @{ string getYouTubeThumbnail(string YoutubeUrl)
@@ -37,11 +44,12 @@
 
         return "http://img.youtube.com/vi/" + youTubeThumb + "/mqdefault.jpg";
     }
-    }
+}
 
 <div class="row" id="navRow">
     <div class="col-md-3">
-        Sort by: <b>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DefaultSortParm })</b></div>
+        Sort by: <b>@Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DefaultSortParm })</b>
+    </div>
     <div class="col-md-3">
         <div class="selected">
             <b>@Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.TitleSortParm })</b>
@@ -59,35 +67,92 @@
     </div>
 </div>
 
+
 @foreach (var item in Model)
 {
+    <div class="row">
+        <div class="col-md-3">
+            <h2>
 
-<div class="row">
-    <div class="col-md-3" >
-        <h2>
-           @Html.ActionLink(" ","IncrementViewCount", new { id = item.videoID }, new {
-           style = "background: url("+Url.Content(getYouTubeThumbnail(item.filepath))+ ") no-repeat center ;display:block; height:146.25px; width:260px;",
-           onclick = "return confirm('Are you sure you want to watch following video: \\n " +
-                     "\\n Video title: " + @item.title +
-                     "\\n Price: " + @item.price.ToString("0.#####################") + " BD" +
-                     "\\n Uploaded by: " + @item.CertUser.username + "')"
-       })
-        </h2>
-    </div>
+                <button onclick='var attr=[@item.videoID, "@item.title", @item.price.ToString("0.#####################"), "@item.CertUser.username"]; PopUp(attr)'
+                        style='background: url(@Url.Content(getYouTubeThumbnail(@item.filepath))) no-repeat center; display:block; height:146.25px; width:260px;'></button>
+            </h2>
+        </div>
 
-    <div class="col-md-3">
-        <p><b>@item.title </b></p>
-        <br />
-        <p background-color="gray">@item.about</p>
-    </div>
+        <div class="col-md-3">
+            <p><b>@item.title </b></p>
+            <br />
+            <p background-color="gray">@item.about</p>
+        </div>
 
-    <div class="col-md-3">
-        <p>@item.viewsCount </p>
+        <div class="col-md-3">
+            <p>@item.viewsCount </p>
+        </div>
+
+        <div class="col-md-3">
+            <p><b>Price</b> > @item.price.ToString("0.#####################") <b>BD</b></p>
+            <p><b>Owner</b> > @item.CertUser.username </p>
+        </div>
     </div>
-      
-    <div class="col-md-3">
-        <p><b>Price</b> > @item.price.ToString("0.#####################") <b>BD</b></p>
-        <p><b>Owner</b> > @item.CertUser.username </p>
-    </div>
-</div>
 }
+
+<div id="popup">
+    <p id="DoYou"></p>
+    @*<form name="passphraseForm" method="post">*@
+    @using (Html.BeginForm("SendDataToIncrementViewCount", "NavigationBar", FormMethod.Post, new { name = "passphraseForm", id = "TheForm" }))
+    {
+        <input id="pass" name="passphrase" type="password" class="form-control" style="width:250px" />
+        <input type="text" name="hiddenVideoID" style="display:none" id="hvid"/>
+    }
+    @*</form>*@
+    <br />
+    <button class="btn btn-default" onclick="Accept()">OK</button>
+    <button class="btn btn-default" onclick="Cancel()">Cancel</button>
+</div>
+
+<script>
+
+    var videosList = document.getElementsByClassName("row");
+    var noOfVideos = videosList.length;
+
+    function PopUp(attr) {
+        var doYou = document.getElementById("DoYou");
+
+        videoID = attr[0];
+        videoTitle = attr[1];
+        videoPrice = attr[2];
+        videoUser = attr[3];
+        document.getElementById("hvid").value = videoID;
+        doYou.innerHTML = 'Are you sure you want to watch following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser + ' <br/><br/> Enter passphrase:';
+        document.getElementById("popup").style.display = "block";
+        ChangePointerEvents("none");
+    }
+
+    function Accept() {
+        var passphrase = document.getElementById("pass").value;
+        if (passphrase == "")
+            alert('Passphrase is required.');
+        else {
+            document.getElementById("popup").style.display = "none";
+            document.passphraseForm.submit();
+            //var addr = "/NavigationBar/IncrementViewCount/" + videoID;
+            //window.location.href = addr;
+        }
+        ChangePointerEvents("auto");
+        return true;
+    }
+
+    function Cancel() {
+        document.getElementById("popup").style.display = "none";
+        ChangePointerEvents("auto");
+        return false;
+    }
+
+    function ChangePointerEvents(prop) {
+        for (var i = 0; i < noOfVideos; i++) {
+            videosList[i].style.pointerEvents = prop;
+        }
+    }
+</script>
+
+

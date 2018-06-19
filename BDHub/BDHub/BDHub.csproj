@@ -253,6 +253,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ContentCSS\InputPasswordOnMainPage.css" />
     <Content Include="ContentCSS\Registration.css" />
     <Content Include="ContentCSS\Upload.css" />
     <Content Include="Content\bootstrap-grid.css" />

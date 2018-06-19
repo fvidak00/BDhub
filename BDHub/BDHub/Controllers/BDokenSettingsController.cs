@@ -17,7 +17,7 @@ namespace BDHub.Controllers
         private BDokenControl BDC = new BDokenControl();
         private static decimal userBalance = -1;
 
-        public ActionResult Index(int mssg = 0)
+        public async Task<ActionResult> Index(int mssg = 0)
         {
             try
             {
@@ -47,6 +47,7 @@ namespace BDHub.Controllers
                 CertUser result = (from r in db.CertUsers
                                    where r.certUserID == sid
                                    select r).SingleOrDefault();
+                await CheckBDokenBalance();
                 result.balance = userBalance;
                 return View(result);
             }
@@ -160,14 +161,40 @@ namespace BDHub.Controllers
             return View(bdDetails);
         }
 
-        public ActionResult BuyBDoken()
+        [HttpPost]
+        public async Task<ActionResult> BuySell(System.Web.Mvc.FormCollection collection)
         {
-            return View();
-        }
+            try
+            {
+                int sid = (int)Session["userID"];
+                CertUser result = (from r in db.CertUsers
+                                   where r.certUserID == sid
+                                   select r).SingleOrDefault();
+                result.bdokenPass = collection[2];
+                if(result.bdokenPass == "")
+                    return RedirectToAction("Index", new { mssg = 4 });
+                
 
-        public ActionResult SellBDoken()
-        {
-            return View();
+                if (Request.Form["BuySubmit"] != null)
+                {
+                    result.buyAmount = Decimal.Parse(collection[3]);
+                    BigInteger BigBuy = await BDC.Buy(result.beternumAddress, result.bdokenPass,(BigInteger)result.buyAmount);
+                    //BigInteger BigBuy = await BDC.Buy(result.beternumAddress, result.bdokenPass, (BigInteger)(result.buyAmount * 1000000000000000000));
+                    
+                }
+                else if (Request.Form["SellSubmit"] != null)
+                {
+                    result.sellAmount = Decimal.Parse(collection[4]);
+                    BigInteger BigSell = await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount));
+                }
+                await CheckBDokenBalance();
+                //Shuold never get here
+                return View("Index", result);
+            }
+            catch
+            {
+                return Redirect("~/Login/Index");
+            }
         }
 
         public async Task<ActionResult> CheckBDokenBalance()
@@ -178,9 +205,6 @@ namespace BDHub.Controllers
                 CertUser result = (from r in db.CertUsers
                                    where r.certUserID == sid
                                    select r).SingleOrDefault();
-                //result.bdokenPass = collection[2];
-                //if(result.bdokenPass == "")
-                //    return RedirectToAction("Index", new { mssg = 4 });
                 try
                 {
                     BigInteger BigBalance = await BDC.CheckBalance(result.beternumAddress, "");
@@ -189,6 +213,7 @@ namespace BDHub.Controllers
                 }
                 catch
                 {
+                    userBalance = -1;
                     return RedirectToAction("Index", new { mssg = 5 });
                 }
 

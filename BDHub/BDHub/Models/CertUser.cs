@@ -71,10 +71,10 @@ namespace BDHub.Models
         public string infoMessage { get; set; } = "";
 
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
-        public decimal buyAmount { get; set; } = 0;
+        public decimal buyAmount { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
-        public decimal sellAmount { get; set; } = 0;
+        public decimal sellAmount { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Video> Videos { get; set; }

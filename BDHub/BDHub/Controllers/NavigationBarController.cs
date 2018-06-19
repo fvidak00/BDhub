@@ -86,12 +86,14 @@ namespace BDHub.Controllers
                     case 1:
                         ViewBag.Message = "Not enough gold, milord.";
                         break;
+                    case 2:
+                        ViewBag.Message = "Incorrect passphrase.";
+                        break;
                     case 0:
                     default:
                         ViewBag.Message = "";
                         break;
                 }
-                    ViewBag.Message = "";
                 
                 IQueryable<Video> videos = VideoSort(sortOrder, 1);
 
@@ -150,7 +152,14 @@ namespace BDHub.Controllers
                     result.viewsCount++;
                     if (result.userID != sid)
                     {
-                        await BDC.Transfer(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
+                        try
+                        {
+                            await BDC.Transfer(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
+                        }
+                        catch
+                        {
+                            return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 2 });
+                        }
                         Payment payment = new Payment
                         {
                             videoTitle = result.title,
@@ -169,7 +178,7 @@ namespace BDHub.Controllers
             catch (Exception e)
             {
                 if (e.Message == "gas required exceeds allowance or always failing transaction")
-                    return RedirectToAction("Index", new { insufficientFunds = 1 });
+                    return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 1 });
                 return Redirect("~/Login/Index");
             }
 

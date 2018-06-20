@@ -7,6 +7,10 @@
     var messageReceived = "@ViewBag.Message";
     if (!(messageReceived === ""))
         alert(messageReceived);
+
+    var bp = @Model.buyPrice;
+    var sp = @Model.sellPrice;
+    
 </script>
 
 <h2>BDoken Settings</h2>
@@ -49,7 +53,7 @@
 
             <div class="col-md-10">
                 @Html.EditorFor(model => model.buyAmount, new { htmlAttributes = new { @class = "form-control" } })
-                <input type="submit" name="BuySubmit" value="Buy (1ETH = 10BD)" class="btn btn-default" />
+                <input type="submit" name="BuySubmit" id="BuySubmit" value="Buy (1ETH = BD )" class="btn btn-default" />
             </div>
         </div>
 
@@ -57,7 +61,7 @@
             @Html.Label("Sell BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.sellAmount, new { htmlAttributes = new { @class = "form-control" } })
-                <input type="submit" name="SellSubmit" value="Sell (1BD = 0.1ETH)" class="btn btn-default" />
+                <input type="submit" name="SellSubmit" id="SellSubmit" value="Sell (1BD = ETH)" class="btn btn-default" />
             </div>
         </div>
 
@@ -69,3 +73,8 @@
         </div>
     </div>
 }
+
+<script>
+    document.getElementById("BuySubmit").value = "Buy (1ETH = " + bp + "BD)";
+    document.getElementById("SellSubmit").value = "Sell (1BD = " + sp + "ETH)";
+</script>

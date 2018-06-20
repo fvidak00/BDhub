@@ -99,13 +99,11 @@
 
 <div id="popup">
     <p id="DoYou"></p>
-    @*<form name="passphraseForm" method="post">*@
     @using (Html.BeginForm("SendDataToIncrementViewCount", "NavigationBar", FormMethod.Post, new { name = "passphraseForm", id = "TheForm" }))
     {
         <input id="pass" name="passphrase" type="password" class="form-control" style="width:250px" />
         <input type="text" name="hiddenVideoID" style="display:none" id="hvid"/>
     }
-    @*</form>*@
     <br />
     <button class="btn btn-default" onclick="Accept()">OK</button>
     <button class="btn btn-default" onclick="Cancel()">Cancel</button>
@@ -136,8 +134,6 @@
         else {
             document.getElementById("popup").style.display = "none";
             document.passphraseForm.submit();
-            //var addr = "/NavigationBar/IncrementViewCount/" + videoID;
-            //window.location.href = addr;
         }
         ChangePointerEvents("auto");
         return true;

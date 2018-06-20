@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using System.Windows.Forms;
 using BDHub.Models;
@@ -49,6 +47,10 @@ namespace BDHub.Controllers
                                    select r).SingleOrDefault();
                 await CheckBDokenBalance();
                 result.balance = userBalance;
+                BigInteger sellPrice = await BDC.GetSellPrice(result.beternumAddress);
+                BigInteger buyPrice = await BDC.GetBuyPrice(result.beternumAddress);
+                result.sellPrice = 1 / (decimal)sellPrice;
+                result.buyPrice = (decimal)buyPrice / 1000000000000000000;
                 return View(result);
             }
             catch
@@ -187,7 +189,6 @@ namespace BDHub.Controllers
                     await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount*1000000000000000000));
                 }
                 await CheckBDokenBalance();
-                //Shuold never get here
                 return View("Index", result);
             }
             catch

@@ -140,7 +140,7 @@ namespace BDHub.Controllers
                                 select r).SingleOrDefault();
 
                 BigInteger BDWei = 0;
-                if (result.price != 0)
+                if (result.price != 0 && result.userID != sid)
                 {
                     BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 

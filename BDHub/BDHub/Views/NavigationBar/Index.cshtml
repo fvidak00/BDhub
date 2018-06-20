@@ -12,10 +12,12 @@
     if (!(notEnoughGoldMessage === ""))
         alert(notEnoughGoldMessage);
 
+    var sid = parseInt('@Session["userID"]');
     var videoID = 0;
     var videoTitle = "";
     var videoPrice = "";
     var videoUser = "";
+    var videoUploaderID = 0;
 </script>
 
 @{ string getYouTubeThumbnail(string YoutubeUrl)
@@ -74,8 +76,7 @@
     <div class="row">
         <div class="col-md-3">
             <h2>
-
-                <button onclick='var attr=[@item.videoID, "@item.title", @item.price.ToString("0.#####################"), "@item.CertUser.username"]; PopUp(attr)'
+                <button onclick='var attr=[@item.videoID, "@item.title", @item.price.ToString("0.#####################"), "@item.CertUser.username", @item.userID]; PopUp(attr)'
                         style='background: url(@Url.Content(getYouTubeThumbnail(@item.filepath))) no-repeat center; display:block; height:146.25px; width:260px;'></button>
             </h2>
         </div>
@@ -116,16 +117,27 @@
 
     function PopUp(attr) {
         var doYou = document.getElementById("DoYou");
-
         videoID = attr[0];
         videoTitle = attr[1];
         videoPrice = attr[2];
         videoUser = attr[3];
+        videoUploaderID = attr[4];
         document.getElementById("hvid").value = videoID;
-        doYou.innerHTML = 'Are you sure you want to watch following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser + ' <br/><br/> Enter passphrase:';
         document.getElementById("popup").style.display = "block";
         ChangePointerEvents("none");
-        document.getElementById("pass").focus();
+        if (videoUploaderID != sid) {
+            document.getElementById("popup").style.height = "300px";
+            document.getElementById("pass").style.display = "block";
+            document.getElementById("pass").value = "";
+            doYou.innerHTML = 'Do you want to watch the following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser + ' <br/><br/> Enter passphrase:';
+            document.getElementById("pass").focus();
+        }
+        else {
+            doYou.innerHTML = 'Do you want to watch the following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser;
+            document.getElementById("pass").style.display = "none";
+            document.getElementById("pass").value = "ItDoesn'tMatterHere";
+            document.getElementById("popup").style.height = "220px";
+        }
     }
 
     function Accept() {

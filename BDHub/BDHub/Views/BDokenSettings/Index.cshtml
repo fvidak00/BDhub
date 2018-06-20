@@ -3,6 +3,8 @@
     ViewBag.Title = "BDoken Settings";
 }
 
+<link href="~/ContentCSS/InputPasswordOnMainPage.css" rel="stylesheet" />
+
 <script type="text/javascript">
     var messageReceived = "@ViewBag.Message";
     if (!(messageReceived === ""))
@@ -10,71 +12,111 @@
 
     var bp = @Model.buyPrice;
     var sp = @Model.sellPrice;
-    
+
 </script>
 
 <h2>BDoken Settings</h2>
 
-@using (Html.BeginForm("BuySell", "BDokenSettings", FormMethod.Post, new { id = Model.certUserID }))
-{
-    @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Details</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.certUserID)
-        <div class="form-group">
-            <div class="col-md-13">
-                @Html.ActionLink("Create BDoken/ERC20 account", "CreateBDokenAcc", "BDokenSettings", new { @class = "btn btn-default" })
-                <br /><br />
-                @Html.ActionLink("Load BDoken/ERC20 account from existing keystore", "LoadBDokenAccount", "BDokenSettings", new { @class = "btn btn-default" })
-                <br /><br />
-                @Html.ActionLink("Show BDoken Data", "BDokenDetails", "BDokenSettings", new { @class = "btn btn-default" })
-            </div>
-        </div>
+@Html.AntiForgeryToken()
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.beternumAddress, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-13">
-                @Html.DisplayFor(model => model.beternumAddress)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("BDoken/ERC20 passphrase", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input class="form-control text-box single-line" name="Passphrase" id="bdokenPass" type="password">
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Buy BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
-
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.buyAmount, new { htmlAttributes = new { @class = "form-control" } })
-                <input type="submit" name="BuySubmit" id="BuySubmit" value="Buy (1ETH = BD )" class="btn btn-default" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Sell BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.sellAmount, new { htmlAttributes = new { @class = "form-control" } })
-                <input type="submit" name="SellSubmit" id="SellSubmit" value="Sell (1BD = ETH)" class="btn btn-default" />
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-13">
-                @Html.ActionLink("Check BDoken balance", "CheckBDokenBalance", "BDokenSettings", new { @class = "btn btn-default" })
-                @Html.DisplayFor(model => model.formattedBalance)
-            </div>
+<div class="form-horizontal" id="ajdeRadiDanas">
+    <h4>Details</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.certUserID)
+    <div class="form-group">
+        <div class="col-md-13">
+            @Html.ActionLink("Create BDoken/ERC20 account", "CreateBDokenAcc", "BDokenSettings", new { @class = "btn btn-default" })
+            <br /><br />
+            @Html.ActionLink("Load BDoken/ERC20 account from existing keystore", "LoadBDokenAccount", "BDokenSettings", new { @class = "btn btn-default" })
+            <br /><br />
+            @Html.ActionLink("Show BDoken Data", "BDokenDetails", "BDokenSettings", new { @class = "btn btn-default" })
         </div>
     </div>
-}
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.beternumAddress, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-13">
+            @Html.DisplayFor(model => model.beternumAddress)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Buy BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
+
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" data-val="true" data-val-number="The field buyAmount must be a number." data-val-required="The buyAmount field is required." id="buyAmount" name="buyAmount" type="text" value="0.00">
+            <button name="Buy" id="Buy" class="btn btn-default" onclick='PopUp("Buy")'>Buy (1ETH = BD )</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Sell BDoken", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" data-val="true" data-val-number="The field sellAmount must be a number." data-val-required="The sellAmount field is required." id="sellAmount" name="sellAmount" type="text" value="0.00">
+            <button name="Sell" id="Sell" class="btn btn-default" onclick='PopUp("Sell")'>Sell (1BD = ETH)</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-13">
+            @Html.ActionLink("Check BDoken balance", "CheckBDokenBalance", "BDokenSettings", new { @class = "btn btn-default", @style = "margin-right:10px" })
+            @Html.DisplayFor(model => model.formattedBalance)
+        </div>
+    </div>
+</div>
+
+<div id="popup2">
+    <p id="DoYou"></p>
+    @using (Html.BeginForm("BuySell", "BDokenSettings", FormMethod.Post, new { name = "passBuySell", id = "TheFormThe" }))
+    {
+        <input id="pass" name="passphrase" type="password" class="form-control" />
+        <input type="text" name="hiddenClickedButton" style="display:none" id="hcb" />
+        <input type="text" name="hiddenAmount" style="display:none" id="ha" />
+    }
+    <br />
+    <button class="btn btn-default" onclick="Accept()" name="AcceptButton">OK</button>
+    <button class="btn btn-default" onclick="Cancel()" name="CancelButton">Cancel</button>
+</div>
+
+
 
 <script>
-    document.getElementById("BuySubmit").value = "Buy (1ETH = " + bp + "BD)";
-    document.getElementById("SellSubmit").value = "Sell (1BD = " + sp + "ETH)";
+    document.getElementById("Buy").innerHTML = "Buy (1ETH = " + bp + "BD)";
+    document.getElementById("Sell").innerHTML = "Sell (1BD = " + sp + "ETH)";
+
+    function PopUp(buttonName) {
+        var doYou = document.getElementById("DoYou");
+        document.getElementById("hcb").value = buttonName;
+        if (buttonName == "Buy")
+            document.getElementById("ha").value = document.getElementById("buyAmount").value;
+        else if (buttonName == "Sell")
+            document.getElementById("ha").value = document.getElementById("sellAmount").value;
+        doYou.innerHTML = 'Enter passphrase:';
+        document.getElementById("popup2").style.display = "block";
+        ChangePointerEvents("none");
+    }
+
+    function Accept() {
+        var passphrase = document.getElementById("pass").value;
+        if (passphrase == "")
+            alert('Passphrase is required.');
+        else {
+            document.getElementById("popup2").style.display = "none";
+            document.passBuySell.submit();
+        }
+        ChangePointerEvents("auto");
+        return true;
+    }
+
+    function Cancel() {
+        document.getElementById("popup2").style.display = "none";
+        ChangePointerEvents("auto");
+        return false;
+    }
+
+    function ChangePointerEvents(prop) {
+        document.getElementById("ajdeRadiDanas").style.pointerEvents = prop;
+    }
 </script>

@@ -110,26 +110,18 @@ namespace BDHub
         //Buy & Sell
         public async Task CallFunction(string senderAddress, BigInteger value, Function function, int soCSharpKnowsDifference)
         {
-            try
+            //Buy & Donate
+            if (soCSharpKnowsDifference == 0)
             {
-                //Buy & Donate
-                if (soCSharpKnowsDifference == 0)
-                {
-                    HexBigInteger gas = await function.EstimateGasAsync(senderAddress, null, new HexBigInteger(value));
-                    await function.SendTransactionAndWaitForReceiptAsync(senderAddress, gas, new HexBigInteger(value));
-                }
-                //Sell
-                else if (soCSharpKnowsDifference == 1)
-                {
-                    HexBigInteger gas = await function.EstimateGasAsync(senderAddress, null, null, value);
-                    await function.SendTransactionAndWaitForReceiptAsync(senderAddress, gas, null, null, value);
-                }
+                HexBigInteger gas = await function.EstimateGasAsync(senderAddress, null, new HexBigInteger(value));
+                await function.SendTransactionAndWaitForReceiptAsync(senderAddress, gas, new HexBigInteger(value));
             }
-            catch (Exception e)
+            //Sell
+            else if (soCSharpKnowsDifference == 1)
             {
-                
+                HexBigInteger gas = await function.EstimateGasAsync(senderAddress, null, null, value);
+                await function.SendTransactionAndWaitForReceiptAsync(senderAddress, gas, null, null, value);
             }
-
         }
         //CheckRequiredFunds
         public async Task<bool> CallFunction(string senderAddress, BigInteger value, Function function)

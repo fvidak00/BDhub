@@ -94,7 +94,7 @@ namespace BDHub.Controllers
                         ViewBag.Message = "";
                         break;
                 }
-                
+
                 IQueryable<Video> videos = VideoSort(sortOrder, 1);
 
                 return View(videos.ToList());
@@ -139,39 +139,39 @@ namespace BDHub.Controllers
                                 where r.certUserID == result.userID
                                 select r).SingleOrDefault();
 
-                BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
+                BigInteger BDWei = 0;
+                if (result.price != 0)
+                {
+                    BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
-                if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "", BDWei)) && result.userID != sid)
-                {
-                    return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 1 });
-                }
-                else
-                {
-                    result.viewsCount++;
-                    if (result.userID != sid)
+                    if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "", BDWei)) && result.userID != sid)
                     {
-                        try
-                        {
-                            await BDC.PayUp(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
-                        }
-                        catch
-                        {
-                            return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 2 });
-                        }
-                        Payment payment = new Payment
-                        {
-                            videoTitle = result.title,
-                            payerUsername = payer.username,
-                            receiverUsername = receiver.username,
-                            paymentSum = result.price,
-                            paymentDatetime = DateTime.Now
-                        };
-                        db.Payments.Add(payment);
+                        return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 1 });
                     }
-                    db.SaveChanges();
-
-                    return RedirectToAction("VideoPlayer", new { id });
                 }
+                result.viewsCount++;
+                if (result.userID != sid)
+                {
+                    try
+                    {
+                        await BDC.PayUp(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
+                    }
+                    catch
+                    {
+                        return RedirectToAction("Index", new { sortOrder = "", insufficientFunds = 2 });
+                    }
+                    Payment payment = new Payment
+                    {
+                        videoTitle = result.title,
+                        payerUsername = payer.username,
+                        receiverUsername = receiver.username,
+                        paymentSum = result.price,
+                        paymentDatetime = DateTime.Now
+                    };
+                    db.Payments.Add(payment);
+                }
+                db.SaveChanges();
+                return RedirectToAction("VideoPlayer", new { id });
             }
             catch (Exception e)
             {

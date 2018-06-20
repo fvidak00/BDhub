@@ -37,6 +37,12 @@ namespace BDHub.Controllers
                     case 5:
                         ViewBag.Message = "Passphrase incorrect.";
                         break;
+                    case 6:
+                        ViewBag.Message = "Amount set to 0, transaction cancelled.";
+                        break;
+                    case 7:
+                        ViewBag.Message = "Incorrect input, number is required.";
+                            break;
                     case 0:
                     default:
                         ViewBag.Message = "";
@@ -172,22 +178,53 @@ namespace BDHub.Controllers
                 CertUser result = (from r in db.CertUsers
                                    where r.certUserID == sid
                                    select r).SingleOrDefault();
-                result.bdokenPass = collection[2];
-                if(result.bdokenPass == "")
-                    return RedirectToAction("Index", new { mssg = 4 });
-                
 
-                if (Request.Form["BuySubmit"] != null)
+                string clickedButton = collection["hiddenClickedButton"];
+                result.bdokenPass = collection["passphrase"];
+                if (result.bdokenPass == "")
+                    return RedirectToAction("Index", new { mssg = 4 });
+                if (!Decimal.TryParse(collection["hiddenAmount"], out decimal amount))
                 {
-                    result.buyAmount = Decimal.Parse(collection[3]);
-                    await BDC.Buy(result.beternumAddress, result.bdokenPass,(BigInteger)result.buyAmount*1000000000000000000);
-                    
+                    return RedirectToAction("Index", new { mssg = 7 });
                 }
-                else if (Request.Form["SellSubmit"] != null)
+
+                if (clickedButton.Equals("Buy"))
                 {
-                    result.sellAmount = Decimal.Parse(collection[4]);
-                    await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount*1000000000000000000));
+                    result.buyAmount = amount;
+                    if (result.buyAmount != 0)
+                        try
+                        {
+                            await BDC.Buy(result.beternumAddress, result.bdokenPass, (BigInteger)result.buyAmount * 1000000000000000000);
+                        }
+                        catch
+                        {
+                            return RedirectToAction("Index", new { mssg = 5 });
+                        }
+                    else
+                        return RedirectToAction("Index", new { mssg = 6 });
                 }
+                else if (clickedButton.Equals("Sell"))
+                {
+                    result.sellAmount = amount;
+                    if (result.sellAmount != 0)
+                        try
+                        {
+                            await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount * 1000000000000000000));
+                        }
+                        catch
+                        {
+                            return RedirectToAction("Index", new { mssg = 5 });
+                        }
+                    else
+                        return RedirectToAction("Index", new { mssg = 6 });
+                }
+
+                result.sellAmount = 0;
+                result.buyAmount = 0;
+                BigInteger sellPrice = await BDC.GetSellPrice(result.beternumAddress);
+                BigInteger buyPrice = await BDC.GetBuyPrice(result.beternumAddress);
+                result.sellPrice = 1 / (decimal)sellPrice;
+                result.buyPrice = (decimal)buyPrice / 1000000000000000000;
                 await CheckBDokenBalance();
                 return View("Index", result);
             }
@@ -286,6 +323,5 @@ namespace BDHub.Controllers
             return filePath;
 
         }
-
     }
 }

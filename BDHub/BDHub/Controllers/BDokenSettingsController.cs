@@ -14,7 +14,7 @@ namespace BDHub.Controllers
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
         private static decimal userBalance = -1;
-        private static string preventResend = "";
+        private static int preventResend = 0;
 
         public async Task<ActionResult> Index(int mssg = 0)
         {
@@ -173,7 +173,7 @@ namespace BDHub.Controllers
         [HttpPost]
         public async Task<ActionResult> BuySell(System.Web.Mvc.FormCollection collection)
         {
-            if (preventResend != Session.SessionID)
+            if (preventResend != 1)
             {
                 try
                 {
@@ -242,7 +242,7 @@ namespace BDHub.Controllers
                             return RedirectToAction("Index", new { mssg = 6 });
                     }
 
-                    preventResend = Session.SessionID;
+                    preventResend = 1;
                     result.sellAmount = 0;
                     result.buyAmount = 0;
                     BigInteger sellPrice = await BDC.GetSellPrice(result.beternumAddress);
@@ -266,6 +266,7 @@ namespace BDHub.Controllers
                 result.bdokenPass = "";
                 result.sellAmount = 0;
                 result.buyAmount = 0;
+                preventResend = 0;
                 BigInteger sellPrice = await BDC.GetSellPrice(result.beternumAddress);
                 BigInteger buyPrice = await BDC.GetBuyPrice(result.beternumAddress);
                 result.sellPrice = 1 / (decimal)sellPrice;

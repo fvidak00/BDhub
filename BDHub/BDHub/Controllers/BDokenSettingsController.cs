@@ -178,14 +178,13 @@ namespace BDHub.Controllers
                 if (Request.Form["BuySubmit"] != null)
                 {
                     result.buyAmount = Decimal.Parse(collection[3]);
-                    BigInteger BigBuy = await BDC.Buy(result.beternumAddress, result.bdokenPass,(BigInteger)result.buyAmount);
-                    //BigInteger BigBuy = await BDC.Buy(result.beternumAddress, result.bdokenPass, (BigInteger)(result.buyAmount * 1000000000000000000));
+                    await BDC.Buy(result.beternumAddress, result.bdokenPass,(BigInteger)result.buyAmount*1000000000000000000);
                     
                 }
                 else if (Request.Form["SellSubmit"] != null)
                 {
                     result.sellAmount = Decimal.Parse(collection[4]);
-                    BigInteger BigSell = await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount));
+                    await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount*1000000000000000000));
                 }
                 await CheckBDokenBalance();
                 //Shuold never get here

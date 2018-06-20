@@ -139,8 +139,6 @@ namespace BDHub.Controllers
                                 where r.certUserID == result.userID
                                 select r).SingleOrDefault();
 
-
-
                 BigInteger BDWei = (BigInteger)(result.price * (decimal)Math.Pow(10, 18));
 
                 if (!(await BDC.CheckRequiredFunds(payer.beternumAddress, "", BDWei)) && result.userID != sid)
@@ -154,7 +152,7 @@ namespace BDHub.Controllers
                     {
                         try
                         {
-                            await BDC.Transfer(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
+                            await BDC.PayUp(payer.beternumAddress, passphrase, receiver.beternumAddress, BDWei);
                         }
                         catch
                         {

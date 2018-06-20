@@ -105,7 +105,7 @@
         <input type="text" name="hiddenVideoID" style="display:none" id="hvid" />
     }
     <br />
-    <button class="btn btn-default" onclick="Accept()">OK</button>
+    <button id="AcceptButton" class="btn btn-default" onclick="Accept()">OK</button>
     <button class="btn btn-default" onclick="Cancel()">Cancel</button>
 </div>
 
@@ -125,6 +125,7 @@
         doYou.innerHTML = 'Are you sure you want to watch following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser + ' <br/><br/> Enter passphrase:';
         document.getElementById("popup").style.display = "block";
         ChangePointerEvents("none");
+        document.getElementById("pass").focus();
     }
 
     function Accept() {
@@ -150,6 +151,14 @@
             videosList[i].style.pointerEvents = prop;
         }
     }
+
+    var input = document.getElementById("pass");
+    input.addEventListener("keyup", function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            document.getElementById("AcceptButton").click();
+        }
+    });
 </script>
 
 

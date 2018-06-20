@@ -14,6 +14,7 @@ namespace BDHub.Controllers
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
         private static decimal userBalance = -1;
+        private static string preventResend = "";
 
         public async Task<ActionResult> Index(int mssg = 0)
         {
@@ -42,7 +43,7 @@ namespace BDHub.Controllers
                         break;
                     case 7:
                         ViewBag.Message = "Incorrect input, number is required.";
-                            break;
+                        break;
                     case 0:
                     default:
                         ViewBag.Message = "";
@@ -172,53 +173,97 @@ namespace BDHub.Controllers
         [HttpPost]
         public async Task<ActionResult> BuySell(System.Web.Mvc.FormCollection collection)
         {
-            try
+            if (preventResend != Session.SessionID)
+            {
+                try
+                {
+                    int sid = (int)Session["userID"];
+                    CertUser result = (from r in db.CertUsers
+                                       where r.certUserID == sid
+                                       select r).SingleOrDefault();
+                    result.sellAmount = 0;
+                    result.buyAmount = 0;
+                    result.bdokenPass = "";
+
+
+                    string clickedButton = collection["hiddenClickedButton"];
+                    result.bdokenPass = collection["passphrase"];
+                    if (result.bdokenPass == "")
+                        return RedirectToAction("Index", new { mssg = 4 });
+                    if (!Decimal.TryParse(collection["hiddenAmount"], out decimal amount))
+                    {
+                        return RedirectToAction("Index", new { mssg = 7 });
+                    }
+
+                    if (clickedButton.Equals("Buy"))
+                    {
+                        result.buyAmount = amount;
+                        if (result.buyAmount != 0)
+                            try
+                            {
+                                await BDC.Buy(result.beternumAddress, result.bdokenPass, (BigInteger)result.buyAmount * 1000000000000000000);
+
+                            }
+                            catch
+                            {
+                                return RedirectToAction("Index", new { mssg = 5 });
+                            }
+                        else
+                            return RedirectToAction("Index", new { mssg = 6 });
+                    }
+                    else if (clickedButton.Equals("Sell"))
+                    {
+                        result.sellAmount = amount;
+                        if (result.sellAmount != 0)
+                            try
+                            {
+                                await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount * 1000000000000000000));
+                            }
+                            catch
+                            {
+                                return RedirectToAction("Index", new { mssg = 5 });
+                            }
+                        else
+                            return RedirectToAction("Index", new { mssg = 6 });
+                    }
+                    else if (clickedButton.Equals("Donate"))
+                    {
+                        result.donateAmount = amount;
+                        if (result.donateAmount != 0)
+                            try
+                            {
+                                await BDC.BloodForTheBloodGod(result.beternumAddress, result.bdokenPass, (BigInteger)(result.donateAmount * 1000000000000000000));
+                            }
+                            catch
+                            {
+                                return RedirectToAction("Index", new { mssg = 5 });
+                            }
+                        else
+                            return RedirectToAction("Index", new { mssg = 6 });
+                    }
+
+                    preventResend = Session.SessionID;
+                    result.sellAmount = 0;
+                    result.buyAmount = 0;
+                    BigInteger sellPrice = await BDC.GetSellPrice(result.beternumAddress);
+                    BigInteger buyPrice = await BDC.GetBuyPrice(result.beternumAddress);
+                    result.sellPrice = 1 / (decimal)sellPrice;
+                    result.buyPrice = (decimal)buyPrice / 1000000000000000000;
+                    await CheckBDokenBalance();
+                    return View("Index", result);
+                }
+                catch
+                {
+                    return Redirect("~/Login/Index");
+                }
+            }
+            else
             {
                 int sid = (int)Session["userID"];
                 CertUser result = (from r in db.CertUsers
                                    where r.certUserID == sid
                                    select r).SingleOrDefault();
-
-                string clickedButton = collection["hiddenClickedButton"];
-                result.bdokenPass = collection["passphrase"];
-                if (result.bdokenPass == "")
-                    return RedirectToAction("Index", new { mssg = 4 });
-                if (!Decimal.TryParse(collection["hiddenAmount"], out decimal amount))
-                {
-                    return RedirectToAction("Index", new { mssg = 7 });
-                }
-
-                if (clickedButton.Equals("Buy"))
-                {
-                    result.buyAmount = amount;
-                    if (result.buyAmount != 0)
-                        try
-                        {
-                            await BDC.Buy(result.beternumAddress, result.bdokenPass, (BigInteger)result.buyAmount * 1000000000000000000);
-                        }
-                        catch
-                        {
-                            return RedirectToAction("Index", new { mssg = 5 });
-                        }
-                    else
-                        return RedirectToAction("Index", new { mssg = 6 });
-                }
-                else if (clickedButton.Equals("Sell"))
-                {
-                    result.sellAmount = amount;
-                    if (result.sellAmount != 0)
-                        try
-                        {
-                            await BDC.Sell(result.beternumAddress, result.bdokenPass, (BigInteger)(result.sellAmount * 1000000000000000000));
-                        }
-                        catch
-                        {
-                            return RedirectToAction("Index", new { mssg = 5 });
-                        }
-                    else
-                        return RedirectToAction("Index", new { mssg = 6 });
-                }
-
+                result.bdokenPass = "";
                 result.sellAmount = 0;
                 result.buyAmount = 0;
                 BigInteger sellPrice = await BDC.GetSellPrice(result.beternumAddress);
@@ -227,10 +272,6 @@ namespace BDHub.Controllers
                 result.buyPrice = (decimal)buyPrice / 1000000000000000000;
                 await CheckBDokenBalance();
                 return View("Index", result);
-            }
-            catch
-            {
-                return Redirect("~/Login/Index");
             }
         }
 

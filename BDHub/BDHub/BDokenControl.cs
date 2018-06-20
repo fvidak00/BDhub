@@ -107,7 +107,7 @@ namespace BDHub
             HexBigInteger gas = await function.EstimateGasAsync(senderAddress, null, null);
             return await function.CallAsync<BigInteger>(senderAddress, gas, null);
         }
-        //Buy & Sell
+        //Buy & Sell & Donate
         public async Task CallFunction(string senderAddress, BigInteger value, Function function, int soCSharpKnowsDifference)
         {
             //Buy & Donate

@@ -60,6 +60,14 @@
     </div>
 
     <div class="form-group">
+        @Html.Label("Donate ETH", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <input class="form-control text-box single-line" data-val="true" data-val-number="The field donateAmount must be a number." data-val-required="The donateAmount field is required." id="donateAmount" name="donateAmount" type="text" value="0.00">
+            <button name="Donate" id="Donate" class="btn btn-default" onclick='PopUp("Donate")'>Donate ETH to token</button>
+        </div>
+    </div>
+
+    <div class="form-group">
         <div class="col-md-13">
             @Html.ActionLink("Check BDoken balance", "CheckBDokenBalance", "BDokenSettings", new { @class = "btn btn-default", @style = "margin-right:10px" })
             @Html.DisplayFor(model => model.formattedBalance)
@@ -76,7 +84,7 @@
         <input type="text" name="hiddenAmount" style="display:none" id="ha" />
     }
     <br />
-    <button class="btn btn-default" onclick="Accept()" name="AcceptButton">OK</button>
+    <button class="btn btn-default" onclick="Accept()" name="AcceptButton" id="AcceptButton">OK</button>
     <button class="btn btn-default" onclick="Cancel()" name="CancelButton">Cancel</button>
 </div>
 
@@ -93,9 +101,12 @@
             document.getElementById("ha").value = document.getElementById("buyAmount").value;
         else if (buttonName == "Sell")
             document.getElementById("ha").value = document.getElementById("sellAmount").value;
+        else if (buttonName == "Donate")
+            document.getElementById("ha").value = document.getElementById("donateAmount").value;
         doYou.innerHTML = 'Enter passphrase:';
         document.getElementById("popup2").style.display = "block";
         ChangePointerEvents("none");
+        document.getElementById("pass").focus();
     }
 
     function Accept() {
@@ -119,4 +130,12 @@
     function ChangePointerEvents(prop) {
         document.getElementById("ajdeRadiDanas").style.pointerEvents = prop;
     }
+
+    var input = document.getElementById("pass");
+    input.addEventListener("keyup", function (event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            document.getElementById("AcceptButton").click();
+        }
+    });
 </script>

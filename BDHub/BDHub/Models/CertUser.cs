@@ -40,7 +40,7 @@ namespace BDHub.Models
         [DisplayName("E-mail")]
         public string email { get; set; }
 
-        [DisplayName("Bethernum Account Address")]
+        [DisplayName("Beternum Account Address")]
         public string beternumAddress { get; set; } = "";
 
         public string LoginErrorMessage { get; set; }
@@ -71,10 +71,13 @@ namespace BDHub.Models
         public string infoMessage { get; set; } = "";
 
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
-        public decimal buyAmount { get; set; }
+        public decimal buyAmount { get; set; } = 0m;
 
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
-        public decimal sellAmount { get; set; }
+        public decimal sellAmount { get; set; } = 0m;
+
+        [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
+        public decimal donateAmount { get; set; } = 0m;
 
         [DisplayFormat(DataFormatString = "{0:0.00000000000000000000}")]
         public decimal buyPrice { get; set; } = -1;

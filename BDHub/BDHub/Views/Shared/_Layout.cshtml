@@ -29,6 +29,23 @@
                     <li>@Html.ActionLink("My Transactions", "Transactions", "NavigationBar")</li>
                     <li>@Html.ActionLink("Upload", "Upload", "Upload")</li>
                     <li>@Html.ActionLink("BDoken Settings", "Index", "BDokenSettings")</li>
+                    <li class="searchBar">
+                        @{
+            string CurrentURL = Request.Url.AbsolutePath;
+            if (CurrentURL.Equals("/NavigationBar") || CurrentURL.Equals("/NavigationBar/MyVideos"))
+            {
+                using (Html.BeginForm("Index", "NavigationBar", FormMethod.Get))
+
+
+
+                {
+
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+                    <input type="submit" value="Search" />
+                }
+            }
+                    }
+                </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>@Html.ActionLink("Logout", "../Login/Logout", "", new { onclick = "return confirm('Are you sure you want to logout?');" })</li>

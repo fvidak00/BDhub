@@ -15,12 +15,13 @@ namespace BDHub.Controllers
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
 
-        public IQueryable<Video> VideoSort(string sortOrder, int stat)
+        public IQueryable<Video> VideoSort(string sortOrder, int stat,string searchString)
         {
             ViewBag.DefaultSortParm = sortOrder == "videoid_desc" ? "VideoID" : "videoid_desc";
             ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
+
             IQueryable<Video> videos;
 
             if (stat == 1)
@@ -34,6 +35,12 @@ namespace BDHub.Controllers
                 videos = from v in db.Videos
                          where v.userID == sid
                          select v;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                videos = videos.Where(s => s.title.Contains(searchString)
+                                       || s.CertUser.username.Contains(searchString));
             }
 
             switch (sortOrder)
@@ -66,10 +73,11 @@ namespace BDHub.Controllers
                     videos = videos.OrderBy(s => s.videoID);
                     break;
             }
+
             return videos;
         }
 
-        public ActionResult Index(string sortOrder = "", int insufficientFunds = 0)
+        public ActionResult Index(string sortOrder = "", int insufficientFunds = 0,string searchString="")
         {
             try
             {
@@ -95,7 +103,7 @@ namespace BDHub.Controllers
                         break;
                 }
 
-                IQueryable<Video> videos = VideoSort(sortOrder, 1);
+                IQueryable<Video> videos = VideoSort(sortOrder, 1,searchString);
 
                 return View(videos.ToList());
             }
@@ -237,11 +245,11 @@ namespace BDHub.Controllers
 
         }
 
-        public ActionResult MyVideos(string sortOrder)
+        public ActionResult MyVideos(string sortOrder,string searchString)
         {
             try
             {
-                IQueryable<Video> videos = VideoSort(sortOrder, 2);
+                IQueryable<Video> videos = VideoSort(sortOrder, 2,searchString);
                 return View(videos.ToList());
             }
             catch

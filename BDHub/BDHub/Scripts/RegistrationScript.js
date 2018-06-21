@@ -51,11 +51,11 @@ myApp.controller('registrationCtrl', function ($scope, $http, $window) {
 myApp.controller('uploadController', function ($scope, $http, $window) {
 
     $scope.video = {};
-
+	var status = {};
 
     var videoTitle = "";
 
-    $scope.priceRegEx = /^(\d*\,)?\d+$/;
+    $scope.priceRegEx = /^(\d*\.)?\d+$/;
     $scope.regex = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 
 
@@ -130,23 +130,24 @@ myApp.controller('uploadController', function ($scope, $http, $window) {
         }
     };
 
-
+	
     $scope.savevideo = function (video) {
 
         $http.post("/Upload/SaveVideo", { newVideo: video })
             .then(function succesCallback(response) {
                 status = response.data;
-                if (status === 0) {
-                    alert("Upload successfull");
-                    $window.location.href = '/NavigationBar/MyVideos';
-                    $scope.video = "";
-                }
-                else if (status === 1) {
-                    alert("You already upload video with that URL");
-                }
-                else if (status === 2) {
-                    alert("There is already video with the same URL in system");
-                }
+				if (status === 0) {
+					alert("Upload successfull");
+					$window.location.href = '/NavigationBar/MyVideos';
+					$scope.video = "";
+				}
+				else if (status === 1) {
+					alert("You already upload video with that URL");
+				}
+				else if (status === 2) {
+					alert("There is already video with the same URL in system");
+				}
+				
             }, function errorCallback(response) {
                 alert("Invalid input!");
             });

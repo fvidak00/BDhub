@@ -19,12 +19,12 @@
 
 
 @*@using (Html.BeginForm("VideoPlayer", "NavigationBar", FormMethod.Get))
-{
-    @Html.AntiForgeryToken()*@
+    {
+        @Html.AntiForgeryToken()*@
 
-    <div id="player">
-    </div>
-    <script type="text/javascript">
+<div id="player">
+</div>
+<script type="text/javascript">
             var tag = document.createElement('script');
             tag.src = "https://www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -69,21 +69,21 @@
         function stopVideo() {
             player.stopVideo();
         }
-    </script>
+</script>
 
-    <div class="row">
-        <div class="col-md-3">
-            <p><b>@Model.title</b></p>
-        </div>
-        <div class="col-md-3">
-            <p>@Model.about</p>
-        </div>
-        <div class="col-md-3">
-            @Model.viewsCount
-        </div>
-        <div class="col-md-3">
-            <p>@Model.CertUser.username</p>
-            <p>@Model.price.ToString("0.#####################") <b>BD</b></p>
-        </div>
+<div class="row">
+    <div class="col-md-3">
+        <p><b>@Model.title</b></p>
     </div>
+    <div class="col-md-3">
+        <p>@Model.about</p>
+    </div>
+    <div class="col-md-3">
+        @Model.viewsCount
+    </div>
+    <div class="col-md-3">
+        <p>@Model.CertUser.username</p>
+        <p>@Model.price.ToString("0.#####################") <b>BD</b></p>
+    </div>
+</div>
 @*}*@

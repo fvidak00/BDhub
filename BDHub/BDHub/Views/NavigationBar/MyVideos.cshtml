@@ -4,6 +4,14 @@
     ViewBag.Title = "My Videos";
 }
 
+<link href="~/ContentCSS/InputPasswordOnMainPage.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    var videoID = 0;
+    var videoTitle = "";
+    var videoPrice = "";
+</script>
+
 @{ string getYouTubeThumbnail(string YoutubeUrl)
     {
         string youTubeThumb = string.Empty;
@@ -81,7 +89,51 @@
         <div class="col-md-1">
             <br />
             <p><a class="btn btn-default" href="/NavigationBar/EditVideo/@item.videoID">Edit</a></p>
-            <p><a class="btn btn-default" href="/NavigationBar/DeleteVideo/@item.videoID" onclick="return confirm('Are you sure you want to delete this video? \n\nVideo title:   @item.title\n\nPrice:   @item.price.ToString("0.#####################") BD');">Delete</a></p>
+            <button class="btn btn-default" onclick='var attr=[@item.videoID, "@item.title", @item.price.ToString("0.#####################")]; PopUp(attr)'>Delete</button>
+
         </div>
     </div>
 }
+
+<div id="popupDeleteVideo">
+    <p id="DoYou"></p>
+    <br />
+    <div style="margin-top:-10px">
+        <button id="AcceptButton" class="btn btn-default" onclick="Accept()">OK</button>
+        <button class="btn btn-default" onclick="Cancel()">Cancel</button>
+    </div>
+</div>
+
+<script>
+    var videosList = document.getElementsByClassName("row");
+    var noOfVideos = videosList.length;
+
+    function PopUp(attr) {
+        var doYou = document.getElementById("DoYou");
+        videoID = attr[0];
+        videoTitle = attr[1];
+        videoPrice = attr[2];
+        doYou.innerHTML = 'Do you want to watch the following video? <br/><br/> Video title: <br/>' + videoTitle + '<br/> Price: ' + videoPrice + ' BD';
+        document.getElementById("popupDeleteVideo").style.display = "block";
+        ChangePointerEvents("none");
+    }
+
+    function Accept() {
+        document.getElementById("popupDeleteVideo").style.display = "none";
+        window.location.href = "/NavigationBar/DeleteVideo/" + videoID;
+        ChangePointerEvents("auto");
+        return true;
+    }
+
+    function Cancel() {
+        document.getElementById("popupDeleteVideo").style.display = "none";
+        ChangePointerEvents("auto");
+        return false;
+    }
+
+    function ChangePointerEvents(prop) {
+        for (var i = 0; i < noOfVideos; i++) {
+            videosList[i].style.pointerEvents = prop;
+        }
+    }
+</script>

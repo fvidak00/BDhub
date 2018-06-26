@@ -10,9 +10,11 @@
         alert(messageReceived);
 </script>
 
+<link href="~/ContentCSS/InputPasswordOnMainPage.css" rel="stylesheet" />
+
 <h2>My Profile</h2>
 
-@using (Html.BeginForm("Edit", "NavigationBar", FormMethod.Post, new { id = Model.certUserID }))
+@using (Html.BeginForm("Edit", "NavigationBar", FormMethod.Post, new { id = "EditForm" }))
 {
     @Html.AntiForgeryToken()
 
@@ -61,9 +63,53 @@
                 <br /><br />
 
                 @Html.ActionLink("Change Password", "ChangePassword", "NavigationBar", new { @class = "btn btn-default" })
-                <br /><br />
-                <a class="btn btn-default" href="/NavigationBar/DeleteUser?Length=13" onclick="return confirm('Do you want to delete your BDHub account? \nBDoken/ERC20 account is in located in the keystore.')">Delete User</a>
+                <br />
             </div>
         </div>
     </div>
 }
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <button name="Delete" id="Delete" class="btn btn-default" onclick='PopUp()' style="margin-left:-10px">Delete User</button>
+    </div>
+</div>
+
+<div id="popupMyProfile">
+    <p id="DoYou"></p>
+    <br />
+    <div style="margin-top:-10px">
+        <button id="AcceptButton" class="btn btn-default" onclick="Accept()">OK</button>
+        <button class="btn btn-default" onclick="Cancel()">Cancel</button>
+    </div>
+</div>
+
+<script>
+    var videosList = document.getElementsByClassName("form-group");
+    var noOfVideos = videosList.length;
+
+    function PopUp() {
+        var doYou = document.getElementById("DoYou");
+        doYou.innerHTML = 'Do you want to delete your BDHub account? \nBDoken/ERC20 account is in located in the keystore.';
+        document.getElementById("popupMyProfile").style.display = "block";
+        ChangePointerEvents("none");
+    }
+
+    function Accept() {
+        document.getElementById("popupMyProfile").style.display = "none";
+        window.location.href = "/NavigationBar/DeleteUser?Length=13";
+        ChangePointerEvents("auto");
+        return true;
+    }
+
+    function Cancel() {
+        document.getElementById("popupMyProfile").style.display = "none";
+        ChangePointerEvents("auto");
+        return false;
+    }
+
+    function ChangePointerEvents(prop) {
+        for (var i = 0; i < noOfVideos; i++) {
+            videosList[i].style.pointerEvents = prop;
+        }
+    }
+</script>

@@ -6,10 +6,9 @@
     <title>@ViewBag.Title - BDhub</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
-
-
+    <link href="~/ContentCSS/InputPasswordOnMainPage.css" rel="stylesheet" />
 </head>
+
 <body>
 
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -31,51 +30,53 @@
                     <li>@Html.ActionLink("BDoken Settings", "Index", "BDokenSettings")</li>
                     <li class="searchBar">
                         @{
-        string CurrentURL = Request.Url.AbsolutePath;
-        if (CurrentURL.Equals("/NavigationBar"))
-        {
-            using (Html.BeginForm("Index", "NavigationBar", FormMethod.Get))
+                            string CurrentURL = Request.Url.AbsolutePath;
+                            if (CurrentURL.Equals("/NavigationBar"))
+                            {
+                                using (Html.BeginForm("Index", "NavigationBar", FormMethod.Get))
+                                {
+                                    <input id="SearchString" name="SearchString" type="text" value="" class="form-control">
+                                    <input type="submit" value="Search" class="btn btn-default" style="background-color:whitesmoke" />
+                                }
 
+                            }
+                            else if (CurrentURL.Equals("/NavigationBar/MyVideos"))
+                            {
+                                using (Html.BeginForm("MyVideos", "NavigationBar", FormMethod.Get))
+                                {
+                                    <input id="SearchString" name="SearchString" type="text" value="" class="form-control">
+                                    <input type="submit" value="Search" class="btn btn-default" style="background-color:whitesmoke" />
+                                }
+                            }
+                            else if (CurrentURL.Equals("/NavigationBar/Transactions"))
+                            {
+                                using (Html.BeginForm("Transactions", "NavigationBar", FormMethod.Get))
 
+                                {
 
-            {
-
-                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                    <input type="submit" value="Search" />
-        }
-
-        }
-            else if (CurrentURL.Equals("/NavigationBar/MyVideos"))
-            {
-            using (Html.BeginForm("MyVideos", "NavigationBar", FormMethod.Get))
-
-
-
-            {
-
-                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                    <input type="submit" value="Search" />
-            }
-        }
-        else if (CurrentURL.Equals("/NavigationBar/Transactions"))
-        {
-        using (Html.BeginForm("Transactions", "NavigationBar", FormMethod.Get))
-
-            {
-
-                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-                    <input type="submit" value="Search" />
-            }
-        }
-   }
+                                    <input id="SearchString" name="SearchString" type="text" value="" class="form-control">
+                                    <input type="submit" value="Search" class="btn btn-default" style="background-color:whitesmoke" />
+                                }
+                            }
+                        }
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li>@Html.ActionLink("Logout", "../Login/Logout", "", new { onclick = "return confirm('Are you sure you want to logout?');" })</li>
+                    <li><a onclick='PopUp()' class="btn btn-default" style="background-color:#222; border-width:0">Logout</a></li>
                 </ul>
             </div>
         </div>
     </div>
+
+    <div id="popupLogout">
+        <p id="DoYou"></p>
+        <br />
+        <div style="margin-top:-10px">
+            <button id="AcceptButton" class="btn btn-default" onclick="Accept()">OK</button>
+            <button class="btn btn-default" onclick="Cancel()">Cancel</button>
+        </div>
+    </div>
+
     <div class="container body-content">
         @{
             if (Session["userID"] == null)
@@ -93,5 +94,38 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+
 </body>
 </html>
+
+<script>
+    var videosList = document.getElementsByClassName("container");
+    var noOfVideos = videosList.length;
+
+    function PopUp() {
+        var doYou = document.getElementById("DoYou");
+        doYou.innerHTML = 'Are you sure you want to logout?';
+        document.getElementById("popupLogout").style.display = "block";
+        ChangePointerEvents("none");
+    }
+
+    function Accept() {
+        document.getElementById("popupLogout").style.display = "none";
+        window.location.href = "/Login/Logout?Length=0";
+        ChangePointerEvents("auto");
+        return true;
+    }
+
+    function Cancel() {
+        document.getElementById("popupLogout").style.display = "none";
+        ChangePointerEvents("auto");
+        return false;
+    }
+
+    function ChangePointerEvents(prop) {
+        for (var i = 0; i < noOfVideos; i++) {
+            videosList[i].style.pointerEvents = prop;
+        }
+    }
+</script>

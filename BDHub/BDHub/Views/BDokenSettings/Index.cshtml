@@ -75,7 +75,7 @@
     </div>
 </div>
 
-<div id="popup2">
+<div id="popupBDokenHome">
     <p id="DoYou"></p>
     @using (Html.BeginForm("BuySell", "BDokenSettings", FormMethod.Post, new { name = "passBuySell", id = "TheFormThe" }))
     {
@@ -104,7 +104,7 @@
         else if (buttonName == "Donate")
             document.getElementById("ha").value = document.getElementById("donateAmount").value;
         doYou.innerHTML = 'Enter passphrase:';
-        document.getElementById("popup2").style.display = "block";
+        document.getElementById("popupBDokenHome").style.display = "block";
         ChangePointerEvents("none");
         document.getElementById("pass").focus();
     }
@@ -114,7 +114,7 @@
         if (passphrase == "")
             alert('Passphrase is required.');
         else {
-            document.getElementById("popup2").style.display = "none";
+            document.getElementById("popupBDokenHome").style.display = "none";
             document.passBuySell.submit();
         }
         ChangePointerEvents("auto");
@@ -122,7 +122,7 @@
     }
 
     function Cancel() {
-        document.getElementById("popup2").style.display = "none";
+        document.getElementById("popupBDokenHome").style.display = "none";
         ChangePointerEvents("auto");
         return false;
     }

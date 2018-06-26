@@ -98,7 +98,7 @@
     </div>
 }
 
-<div id="popup">
+<div id="popupHome">
     <p id="DoYou"></p>
     @using (Html.BeginForm("SendDataToIncrementViewCount", "NavigationBar", FormMethod.Post, new { name = "passphraseForm", id = "TheForm" }))
     {
@@ -123,10 +123,10 @@
         videoUser = attr[3];
         videoUploaderID = attr[4];
         document.getElementById("hvid").value = videoID;
-        document.getElementById("popup").style.display = "block";
+        document.getElementById("popupHome").style.display = "block";
         ChangePointerEvents("none");
         if (videoUploaderID != sid) {
-            document.getElementById("popup").style.height = "300px";
+            document.getElementById("popupHome").style.height = "300px";
             document.getElementById("pass").style.display = "block";
             document.getElementById("pass").value = "";
             doYou.innerHTML = 'Do you want to watch the following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser + ' <br/><br/> Enter passphrase:';
@@ -136,7 +136,7 @@
             doYou.innerHTML = 'Do you want to watch the following video? <br/><br/> Video title: ' + videoTitle + '<br/> Price: ' + videoPrice + ' BD <br/> Uploaded by: ' + videoUser;
             document.getElementById("pass").style.display = "none";
             document.getElementById("pass").value = "ItDoesn'tMatterHere";
-            document.getElementById("popup").style.height = "220px";
+            document.getElementById("popupHome").style.height = "220px";
         }
     }
 
@@ -145,7 +145,7 @@
         if (passphrase == "")
             alert('Passphrase is required.');
         else {
-            document.getElementById("popup").style.display = "none";
+            document.getElementById("popupHome").style.display = "none";
             document.passphraseForm.submit();
         }
         ChangePointerEvents("auto");
@@ -153,7 +153,7 @@
     }
 
     function Cancel() {
-        document.getElementById("popup").style.display = "none";
+        document.getElementById("popupHome").style.display = "none";
         ChangePointerEvents("auto");
         return false;
     }

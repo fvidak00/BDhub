@@ -15,6 +15,11 @@ body {
     margin: 0;
 }
 
+.searchBar {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
 
 article,
 aside,

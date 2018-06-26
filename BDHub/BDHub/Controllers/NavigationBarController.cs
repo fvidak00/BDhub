@@ -15,18 +15,25 @@ namespace BDHub.Controllers
         private BDEntities db = new BDEntities();
         private BDokenControl BDC = new BDokenControl();
 
-        public IQueryable<Video> VideoSort(string sortOrder, int stat)
+        public IQueryable<Video> VideoSort(string sortOrder, int stat,string searchString)
         {
             ViewBag.DefaultSortParm = sortOrder == "videoid_desc" ? "VideoID" : "videoid_desc";
             ViewBag.TitleSortParm = sortOrder == "Title" ? "title_desc" : "Title";
             ViewBag.PriceSortParm = sortOrder == "Price" ? "price_desc" : "Price";
             ViewBag.ViewsSortParm = sortOrder == "Views" ? "views_desc" : "Views";
+
             IQueryable<Video> videos;
 
             if (stat == 1)
             {
                 videos = from v in db.Videos
                          select v;
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    videos = videos.Where(s => s.title.Contains(searchString)
+                                           || s.CertUser.username.Contains(searchString));
+                }
             }
             else
             {
@@ -34,7 +41,15 @@ namespace BDHub.Controllers
                 videos = from v in db.Videos
                          where v.userID == sid
                          select v;
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    videos = videos.Where(s => (s.title.Contains(searchString)
+                                           || s.CertUser.username.Contains(searchString) && s.CertUser.certUserID.Equals(sid) )  );
+                }
             }
+
+            
 
             switch (sortOrder)
             {
@@ -66,10 +81,11 @@ namespace BDHub.Controllers
                     videos = videos.OrderBy(s => s.videoID);
                     break;
             }
+
             return videos;
         }
 
-        public ActionResult Index(string sortOrder = "", int insufficientFunds = 0)
+        public ActionResult Index(string sortOrder = "", int insufficientFunds = 0,string searchString="")
         {
             try
             {
@@ -95,7 +111,7 @@ namespace BDHub.Controllers
                         break;
                 }
 
-                IQueryable<Video> videos = VideoSort(sortOrder, 1);
+                IQueryable<Video> videos = VideoSort(sortOrder, 1,searchString);
 
                 return View(videos.ToList());
             }
@@ -123,6 +139,7 @@ namespace BDHub.Controllers
 
         public async Task<ActionResult> IncrementViewCount(int? id, string passphrase)
         {
+           
             try
             {
                 int sid = (int)Session["userID"];
@@ -237,11 +254,11 @@ namespace BDHub.Controllers
 
         }
 
-        public ActionResult MyVideos(string sortOrder)
+        public ActionResult MyVideos(string sortOrder,string searchString)
         {
             try
             {
-                IQueryable<Video> videos = VideoSort(sortOrder, 2);
+                IQueryable<Video> videos = VideoSort(sortOrder, 2,searchString);
                 return View(videos.ToList());
             }
             catch
@@ -256,8 +273,14 @@ namespace BDHub.Controllers
             return View();
         }
 
-        public ActionResult Transactions()
+        public ActionResult Transactions(string sortOrder, string searchString)
         {
+            ViewBag.DateSortParm = sortOrder == "date_desc" ? "date" : "date_desc";
+            ViewBag.PayerSortParm = sortOrder == "payer" ? "payer_desc" : "payer";
+            ViewBag.ReciverSortParm = sortOrder == "reciver" ? "reciver_desc" : "reciver";
+            ViewBag.PaymentSortParm = sortOrder == "payment" ? "payment_desc" : "payment";
+            ViewBag.TitleSortParm = sortOrder == "videoTitle" ? "videoTitle_desc" : "videoTitle";
+
             if (Session["userID"] != null)
             {
                 ViewBag.Message = "Transactions";
@@ -271,7 +294,51 @@ namespace BDHub.Controllers
                                    where (t.payerUsername.Equals(actor.username) || t.receiverUsername.Equals(actor.username))
                                    select t;
 
-                return View(transactions);
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    transactions = transactions.Where(s => s.payerUsername.Contains(searchString)
+                                            || s.receiverUsername.Contains(searchString) || 
+                                           s.videoTitle.Contains(searchString)  );
+                }
+
+                switch (sortOrder)
+                {
+                    case "date":
+                        transactions = transactions.OrderBy(s => s.paymentDatetime);
+                        break;
+                    case "date_desc":
+                        transactions = transactions.OrderByDescending(s => s.paymentDatetime);
+                        break;
+                    case "payer":
+                        transactions = transactions.OrderBy(s => s.payerUsername);
+                        break;
+                    case "payer_desc":
+                        transactions = transactions.OrderByDescending(s => s.payerUsername);
+                        break;
+                    case "reciver":
+                        transactions = transactions.OrderBy(s => s.receiverUsername);
+                        break;
+                    case "reciver_desc":
+                        transactions = transactions.OrderByDescending(s => s.receiverUsername);
+                        break;
+                    case "payment":
+                        transactions = transactions.OrderBy(s => s.paymentSum);
+                        break;
+                    case "payment_desc":
+                        transactions = transactions.OrderByDescending(s => s.paymentSum);
+                        break;
+                    case "videoTitle":
+                        transactions = transactions.OrderBy(s => s.videoTitle);
+                        break;
+                    case "videoTitle_desc":
+                        transactions = transactions.OrderByDescending(s => s.videoTitle);
+                        break;
+                    default:
+                        transactions= transactions.OrderBy(s => s.paymentDatetime);
+                        break;
+                }
+
+                        return View(transactions);
             }
             else
                 return Redirect("~/Login/Index");

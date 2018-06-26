@@ -7,10 +7,10 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="~/ContentCSS/InputPasswordOnMainPage.css" rel="stylesheet" />
+
 </head>
 
 <body>
-
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -62,20 +62,52 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a onclick='PopUp()' class="btn btn-default" style="background-color:#222; border-width:0">Logout</a></li>
+                    @*<li>@Html.ActionLink("Logout", "../Login/Logout", "", new { onclick = "return confirm('Are you sure you want to logout?');" })</li>*@
+                    <li><a onclick='PopUpLogout()' class="btn btn-default" style="background-color:#222; border-width:0">Logout</a></li>
                 </ul>
             </div>
         </div>
     </div>
 
     <div id="popupLogout">
-        <p id="DoYou"></p>
+        <p id="DoYouLogOut"></p>
         <br />
         <div style="margin-top:-10px">
-            <button id="AcceptButton" class="btn btn-default" onclick="Accept()">OK</button>
-            <button class="btn btn-default" onclick="Cancel()">Cancel</button>
+            <button id="AcceptLogout" class="btn btn-default" onclick="AcceptLogout()">OK</button>
+            <button class="btn btn-default" onclick="CancelLogout()">Cancel</button>
         </div>
     </div>
+
+    <script>
+        var containerList = document.getElementsByClassName("container");
+        var noOfContainers = containerList.length;
+
+        function PopUpLogout() {
+            var doYou = document.getElementById("DoYouLogOut");
+            doYou.innerHTML = 'Are you sure you want to logout?';
+            document.getElementById("popupLogout").style.display = "block";
+            ChangePointerEvents("none");
+        }
+
+        function AcceptLogout() {
+            document.getElementById("popupLogout").style.display = "none";
+            window.location.href = "/Login/Logout?Length=0";
+            ChangePointerEvents("auto");
+            return true;
+        }
+
+        function CancelLogout() {
+            document.getElementById("popupLogout").style.display = "none";
+            ChangePointerEvents("auto");
+            return false;
+        }
+
+        function ChangePointerEvents(prop) {
+            for (var i = 0; i < noOfContainers; i++) {
+                containerList[i].style.pointerEvents = prop;
+            }
+        }
+    </script>
 
     <div class="container body-content">
         @{
@@ -98,34 +130,3 @@
 
 </body>
 </html>
-
-<script>
-    var videosList = document.getElementsByClassName("container");
-    var noOfVideos = videosList.length;
-
-    function PopUp() {
-        var doYou = document.getElementById("DoYou");
-        doYou.innerHTML = 'Are you sure you want to logout?';
-        document.getElementById("popupLogout").style.display = "block";
-        ChangePointerEvents("none");
-    }
-
-    function Accept() {
-        document.getElementById("popupLogout").style.display = "none";
-        window.location.href = "/Login/Logout?Length=0";
-        ChangePointerEvents("auto");
-        return true;
-    }
-
-    function Cancel() {
-        document.getElementById("popupLogout").style.display = "none";
-        ChangePointerEvents("auto");
-        return false;
-    }
-
-    function ChangePointerEvents(prop) {
-        for (var i = 0; i < noOfVideos; i++) {
-            videosList[i].style.pointerEvents = prop;
-        }
-    }
-</script>

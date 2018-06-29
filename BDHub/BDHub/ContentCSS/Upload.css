@@ -4,10 +4,7 @@
     width: 50%;
     top: 50%;
     margin-left: 25%;
-    /*margin-right: -50%;
-    transform: translate(-50%, -50%)}*/
 }
-
 
 
 h2 {
@@ -29,6 +26,7 @@ input[type=text], input[type=email] {
         outline: none;
     }
 
+
 #player {
     width: 100%;
     padding: 20px;
@@ -36,6 +34,7 @@ input[type=text], input[type=email] {
     display: inline-block;
     border: none;
 }
+
 
 textarea {
     width: 100%;
@@ -46,16 +45,6 @@ textarea {
     background: #f1f1f1;
 }
 
-/*.registerbtn {
-    background-color: grey;
-    color: white;
-    padding: 16px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    opacity: 0.9;
-}*/
 
 .registerbtn:hover {
     opacity: 1;

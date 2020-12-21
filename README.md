@@ -12,7 +12,7 @@ Technology requirements:
 
     ASP.NET
     C#.NET
-    AngularJS
+    Angular
     Cryptocurrency:
       Ethereum-based ERC20 token
     Database:
